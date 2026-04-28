@@ -1,0 +1,22 @@
+[package]
+name = "leartech-go-service-template"
+version = "0.1.16"
+authors = ["OpenAPI Generator team and contributors"]
+description = "Golden Go service template — replace this description after cloning."
+license = "Apache 2.0"
+edition = "2021"
+
+[dependencies]
+serde = { version = "^1.0", features = ["derive"] }
+serde_json = "^1.0"
+serde_repr = "^0.1"
+url = "^2.5"
+async-trait = "^0.1"
+reqwest = { version = "^0.12", default-features = false, features = ["json", "multipart"] }
+reqwest-middleware = { version = "^0.4", features = ["json", "multipart"] }
+mockall = { version = "^0.13", optional = true}
+[features]
+default = ["native-tls"]
+native-tls = ["reqwest/native-tls"]
+rustls = ["reqwest/rustls-tls"]
+mockall = ["dep:mockall"]
