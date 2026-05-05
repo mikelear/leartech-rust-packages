@@ -1,6 +1,6 @@
 [package]
 name = "leartech-go-service-template"
-version = "0.1.19"
+version = "0.1.20"
 authors = ["OpenAPI Generator team and contributors"]
 description = "Golden Go service template — replace this description after cloning."
 license = "Apache 2.0"
