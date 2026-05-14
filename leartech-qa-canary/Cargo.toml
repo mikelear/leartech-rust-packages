@@ -1,6 +1,6 @@
 [package]
 name = "leartech-qa-canary"
-version = "0.0.18"
+version = "0.0.19"
 authors = ["OpenAPI Generator team and contributors"]
 description = "Golden Go service template — replace this description after cloning."
 license = "Apache 2.0"
