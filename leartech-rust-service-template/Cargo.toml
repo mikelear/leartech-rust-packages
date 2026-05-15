@@ -1,6 +1,6 @@
 [package]
 name = "leartech-rust-service-template"
-version = "0.0.3"
+version = "0.0.4"
 authors = ["OpenAPI Generator team and contributors"]
 description = "Golden Rust HTTP service starter for leartech."
 license = "Apache-2.0"
