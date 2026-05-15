@@ -1,0 +1,14 @@
+.gitignore
+.openapi-generator-ignore
+.travis.yml
+Cargo.toml
+README.md
+docs/ExampleApi.md
+docs/ExampleResponse.md
+git_push.sh
+src/apis/configuration.rs
+src/apis/example_api.rs
+src/apis/mod.rs
+src/lib.rs
+src/models/example_response.rs
+src/models/mod.rs
