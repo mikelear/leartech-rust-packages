@@ -1,6 +1,6 @@
 [package]
 name = "leartech-mortgages-gw"
-version = "0.1.3"
+version = "0.1.4"
 authors = ["OpenAPI Generator team and contributors"]
 description = "Mortgages-domain gateway — MCP (streamable HTTP at /mcp) + REST (at /api/v1/_*) front door. Currently hosts mock sourcing tools for the ChatGPT integration spike; real downstream calls to leartech-mortgages-api land in a subsequent initiative. Calls leartech-mortgages-api via generated Go SDK once that's wired."
 license = "Apache 2.0"
