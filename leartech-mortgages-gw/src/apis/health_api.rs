@@ -1,7 +1,7 @@
 /*
  * Leartech Mortgages Gateway
  *
- * Mortgages-domain gateway — MCP (streamable HTTP) + REST front door. Speaks Model Context Protocol at /mcp for Claude/ChatGPT, REST at /api/v1/_* for future SPA/mobile/partner clients. Calls leartech-mortgages-api via generated Go SDK. Auth/audit/rate-limit chokepoint for the mortgages domain.
+ * Mortgages-domain gateway — MCP (streamable HTTP at /mcp) + REST (at /api/v1/_*) front door. Currently hosts mock sourcing tools for the ChatGPT integration spike; real downstream calls to leartech-mortgages-api land in a subsequent initiative. Calls leartech-mortgages-api via generated Go SDK once that's wired.
  *
  * The version of the OpenAPI document: 0.0.1
  * 
