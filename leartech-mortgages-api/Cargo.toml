@@ -1,6 +1,6 @@
 [package]
 name = "leartech-mortgages-api"
-version = "0.0.1"
+version = "0.0.2"
 authors = ["OpenAPI Generator team and contributors"]
 description = "Mortgages-domain BFF / orchestrator. REST + OpenAPI; sourcing comparison, indicative affordability, total-cost calculation, saved sourcing sessions, minimal case header. Consumed by leartech-mortgages-gw and any future SPA/mobile/partner client via auto-generated SDKs."
 license = "Apache 2.0"
