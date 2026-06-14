@@ -1,6 +1,6 @@
 [package]
 name = "leartech-maestro-service"
-version = "0.0.2"
+version = "0.0.3"
 authors = ["OpenAPI Generator team and contributors"]
 description = "mini orchestration service for handling events"
 license = "Apache 2.0"
