@@ -1,6 +1,6 @@
 [package]
 name = "leartech-catalog-mcp"
-version = "0.0.4"
+version = "0.0.5"
 authors = ["OpenAPI Generator team and contributors"]
 description = "Read-only inventory of leartech services for BA/Architect agents. Foundation for V6-P10 + the new-product layer."
 license = "Apache 2.0"
