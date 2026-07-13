@@ -1,6 +1,6 @@
 [package]
 name = "leartech-ai-gateway"
-version = "0.0.8"
+version = "0.0.9"
 authors = ["OpenAPI Generator team and contributors"]
 description = "OpenAI-compatible model gateway. Callers use logical model names; the gateway routes to the best-fit provider (native / LiteLLM / sidecar)."
 # Override this license by providing a License Object in the OpenAPI.
