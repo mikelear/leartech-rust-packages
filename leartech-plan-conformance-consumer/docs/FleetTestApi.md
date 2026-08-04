@@ -1,17 +1,17 @@
-# \ExampleApi
+# \FleetTestApi
 
 All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**api_v1_example_get**](ExampleApi.md#api_v1_example_get) | **GET** /api/v1/example | Example endpoint
+[**api_v1_fleet_test_get**](FleetTestApi.md#api_v1_fleet_test_get) | **GET** /api/v1/fleet-test | Fleet test endpoint — calls peer template SDKs to prove cross-service auth + SDK wiring.
 
 
 
-## api_v1_example_get
+## api_v1_fleet_test_get
 
-> models::InternalHandlersExampleResponse api_v1_example_get()
-Example endpoint
+> models::InternalHandlersFleetTestResponse api_v1_fleet_test_get()
+Fleet test endpoint — calls peer template SDKs to prove cross-service auth + SDK wiring.
 
 ### Parameters
 
@@ -19,7 +19,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**models::InternalHandlersExampleResponse**](internal_handlers.ExampleResponse.md)
+[**models::InternalHandlersFleetTestResponse**](internal_handlers.fleetTestResponse.md)
 
 ### Authorization
 

@@ -1,8 +1,8 @@
 [package]
 name = "leartech-plan-conformance-consumer"
-version = "0.0.1"
+version = "0.0.2"
 authors = ["OpenAPI Generator team and contributors"]
-description = "Golden Go service template — replace this description after cloning."
+description = "Reference Maestro CONSUMER service — accepts events on POST /consume_event, records them, exposes /confirmed + /events for test-runners to assert an event actually flowed end-to-end. Deployed into jx-plan-conformance and pointed at the isolated Maestro bus."
 license = "Apache 2.0"
 edition = "2021"
 
