@@ -21,19 +21,19 @@ use crate::apis::ContentType;
 
 #[cfg_attr(feature = "mockall", automock)]
 #[async_trait]
-pub trait ExampleApi: Send + Sync {
+pub trait FleetTestApi: Send + Sync {
 
-    /// GET /api/v1/example
+    /// GET /api/v1/fleet-test
     ///
     /// 
-    async fn api_v1_example_get<>(&self, ) -> Result<models::InternalHandlersExampleResponse, Error<ApiV1ExampleGetError>>;
+    async fn api_v1_fleet_test_get<>(&self, ) -> Result<models::InternalHandlersFleetTestResponse, Error<ApiV1FleetTestGetError>>;
 }
 
-pub struct ExampleApiClient {
+pub struct FleetTestApiClient {
     configuration: Arc<configuration::Configuration>
 }
 
-impl ExampleApiClient {
+impl FleetTestApiClient {
     pub fn new(configuration: Arc<configuration::Configuration>) -> Self {
         Self { configuration }
     }
@@ -42,13 +42,13 @@ impl ExampleApiClient {
 
 
 #[async_trait]
-impl ExampleApi for ExampleApiClient {
-    async fn api_v1_example_get<>(&self, ) -> Result<models::InternalHandlersExampleResponse, Error<ApiV1ExampleGetError>> {
+impl FleetTestApi for FleetTestApiClient {
+    async fn api_v1_fleet_test_get<>(&self, ) -> Result<models::InternalHandlersFleetTestResponse, Error<ApiV1FleetTestGetError>> {
         let local_var_configuration = &self.configuration;
 
         let local_var_client = &local_var_configuration.client;
 
-        let local_var_uri_str = format!("{}/api/v1/example", local_var_configuration.base_path);
+        let local_var_uri_str = format!("{}/api/v1/fleet-test", local_var_configuration.base_path);
         let mut local_var_req_builder = local_var_client.request(reqwest::Method::GET, local_var_uri_str.as_str());
 
         if let Some(ref local_var_user_agent) = local_var_configuration.user_agent {
@@ -78,11 +78,11 @@ impl ExampleApi for ExampleApiClient {
         if !local_var_status.is_client_error() && !local_var_status.is_server_error() {
             match local_var_content_type {
                 ContentType::Json => serde_json::from_str(&local_var_content).map_err(Error::from),
-                ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::InternalHandlersExampleResponse`"))),
-                ContentType::Unsupported(local_var_unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{local_var_unknown_type}` content type response that cannot be converted to `models::InternalHandlersExampleResponse`")))),
+                ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::InternalHandlersFleetTestResponse`"))),
+                ContentType::Unsupported(local_var_unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{local_var_unknown_type}` content type response that cannot be converted to `models::InternalHandlersFleetTestResponse`")))),
             }
         } else {
-            let local_var_entity: Option<ApiV1ExampleGetError> = serde_json::from_str(&local_var_content).ok();
+            let local_var_entity: Option<ApiV1FleetTestGetError> = serde_json::from_str(&local_var_content).ok();
             let local_var_error = ResponseContent { status: local_var_status, content: local_var_content, entity: local_var_entity };
             Err(Error::ResponseError(local_var_error))
         }
@@ -90,10 +90,10 @@ impl ExampleApi for ExampleApiClient {
 
 }
 
-/// struct for typed errors of method [`ExampleApi::api_v1_example_get`]
+/// struct for typed errors of method [`FleetTestApi::api_v1_fleet_test_get`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
-pub enum ApiV1ExampleGetError {
+pub enum ApiV1FleetTestGetError {
     Status401(std::collections::HashMap<String, String>),
     UnknownValue(serde_json::Value),
 }

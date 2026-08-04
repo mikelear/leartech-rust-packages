@@ -1,7 +1,7 @@
 /*
- * Leartech Go Service Template API
+ * Leartech Plan Conformance Consumer API
  *
- * Golden Go service template — replace this description after cloning.
+ * Reference Maestro CONSUMER service — accepts events on POST /consume_event, records them, exposes /confirmed + /events for test-runners to assert an event actually flowed end-to-end. Deployed into jx-plan-conformance and pointed at the isolated Maestro bus.
  *
  * The version of the OpenAPI document: 0.0.1
  * 
