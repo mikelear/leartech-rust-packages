@@ -120,76 +120,64 @@ impl From<&str> for ContentType {
     }
 }
 
-pub mod example_api;
-pub mod fleet_test_api;
 pub mod health_api;
+pub mod webhook_api;
 
 pub mod configuration;
 
 use std::sync::Arc;
 
 pub trait Api {
-    fn example_api(&self) -> &dyn example_api::ExampleApi;
-    fn fleet_test_api(&self) -> &dyn fleet_test_api::FleetTestApi;
     fn health_api(&self) -> &dyn health_api::HealthApi;
+    fn webhook_api(&self) -> &dyn webhook_api::WebhookApi;
 }
 
 pub struct ApiClient {
-    example_api: Box<dyn example_api::ExampleApi>,
-    fleet_test_api: Box<dyn fleet_test_api::FleetTestApi>,
     health_api: Box<dyn health_api::HealthApi>,
+    webhook_api: Box<dyn webhook_api::WebhookApi>,
 }
 
 impl ApiClient {
     pub fn new(configuration: Arc<configuration::Configuration>) -> Self {
         Self {
-            example_api: Box::new(example_api::ExampleApiClient::new(configuration.clone())),
-            fleet_test_api: Box::new(fleet_test_api::FleetTestApiClient::new(configuration.clone())),
             health_api: Box::new(health_api::HealthApiClient::new(configuration.clone())),
+            webhook_api: Box::new(webhook_api::WebhookApiClient::new(configuration.clone())),
         }
     }
 }
 
 impl Api for ApiClient {
-    fn example_api(&self) -> &dyn example_api::ExampleApi {
-        self.example_api.as_ref()
-    }
-    fn fleet_test_api(&self) -> &dyn fleet_test_api::FleetTestApi {
-        self.fleet_test_api.as_ref()
-    }
     fn health_api(&self) -> &dyn health_api::HealthApi {
         self.health_api.as_ref()
+    }
+    fn webhook_api(&self) -> &dyn webhook_api::WebhookApi {
+        self.webhook_api.as_ref()
     }
 }
 
 #[cfg(feature = "mockall")]
 pub struct MockApiClient {
-    pub example_api_mock: example_api::MockExampleApi,
-    pub fleet_test_api_mock: fleet_test_api::MockFleetTestApi,
     pub health_api_mock: health_api::MockHealthApi,
+    pub webhook_api_mock: webhook_api::MockWebhookApi,
 }
 
 #[cfg(feature = "mockall")]
 impl MockApiClient {
     pub fn new() -> Self {
         Self {
-            example_api_mock: example_api::MockExampleApi::new(),
-            fleet_test_api_mock: fleet_test_api::MockFleetTestApi::new(),
             health_api_mock: health_api::MockHealthApi::new(),
+            webhook_api_mock: webhook_api::MockWebhookApi::new(),
         }
     }
 }
 
 #[cfg(feature = "mockall")]
 impl Api for MockApiClient {
-    fn example_api(&self) -> &dyn example_api::ExampleApi {
-        &self.example_api_mock
-    }
-    fn fleet_test_api(&self) -> &dyn fleet_test_api::FleetTestApi {
-        &self.fleet_test_api_mock
-    }
     fn health_api(&self) -> &dyn health_api::HealthApi {
         &self.health_api_mock
+    }
+    fn webhook_api(&self) -> &dyn webhook_api::WebhookApi {
+        &self.webhook_api_mock
     }
 }
 

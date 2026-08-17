@@ -1,7 +1,7 @@
 /*
  * leartech-lighthouse-pr-events API
  *
- * Leartech Lighthouse PR-events service. Scaffolded from leartech-go-service-template.
+ * Lighthouse external plugin. Consumes GitHub PR webhooks relayed via util.ParseExternalPluginEvent and announces pr.merged / pr.closed_unmerged to Maestro.
  *
  * The version of the OpenAPI document: 0.0.1
  * 
