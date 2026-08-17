@@ -1,17 +1,17 @@
-# \FleetTestApi
+# \WebhookApi
 
 All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**api_v1_fleet_test_get**](FleetTestApi.md#api_v1_fleet_test_get) | **GET** /api/v1/fleet-test | Fleet test endpoint — calls peer template SDKs to prove cross-service auth + SDK wiring.
+[**lighthouse_events_post**](WebhookApi.md#lighthouse_events_post) | **POST** /lighthouse/events | Lighthouse external-plugin webhook receiver
 
 
 
-## api_v1_fleet_test_get
+## lighthouse_events_post
 
-> models::HandlersFleetTestResponse api_v1_fleet_test_get()
-Fleet test endpoint — calls peer template SDKs to prove cross-service auth + SDK wiring.
+> std::collections::HashMap<String, String> lighthouse_events_post()
+Lighthouse external-plugin webhook receiver
 
 ### Parameters
 
@@ -19,11 +19,11 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**models::HandlersFleetTestResponse**](handlers.fleetTestResponse.md)
+**std::collections::HashMap<String, String>**
 
 ### Authorization
 
-[BearerAuth](../README.md#BearerAuth)
+No authorization required
 
 ### HTTP request headers
 
