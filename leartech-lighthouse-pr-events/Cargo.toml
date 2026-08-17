@@ -1,6 +1,6 @@
 [package]
 name = "leartech-lighthouse-pr-events"
-version = "0.0.2"
+version = "0.0.3"
 authors = ["OpenAPI Generator team and contributors"]
 description = "Lighthouse external plugin. Consumes GitHub PR webhooks relayed via util.ParseExternalPluginEvent and announces pr.merged / pr.closed_unmerged to Maestro."
 license = "Apache 2.0"
