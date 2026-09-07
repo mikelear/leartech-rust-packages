@@ -15,18 +15,25 @@ use serde::{Deserialize, Serialize};
 pub struct ApiModel {
     #[serde(rename = "id", skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
+    /// Capabilities/limits so callers can cap what they can't otherwise see (INTERFACES.md §4 \"degrade visibly, never silently\"). max_ctx is the model's context window; vision reports image-input support.
+    #[serde(rename = "max_ctx", skip_serializing_if = "Option::is_none")]
+    pub max_ctx: Option<i32>,
     #[serde(rename = "object", skip_serializing_if = "Option::is_none")]
     pub object: Option<String>,
     #[serde(rename = "owned_by", skip_serializing_if = "Option::is_none")]
     pub owned_by: Option<String>,
+    #[serde(rename = "vision", skip_serializing_if = "Option::is_none")]
+    pub vision: Option<bool>,
 }
 
 impl ApiModel {
     pub fn new() -> ApiModel {
         ApiModel {
             id: None,
+            max_ctx: None,
             object: None,
             owned_by: None,
+            vision: None,
         }
     }
 }
