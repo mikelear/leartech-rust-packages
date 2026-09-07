@@ -12,21 +12,24 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct ApiChatMessage {
+pub struct WebsearchItem {
     #[serde(rename = "content", skip_serializing_if = "Option::is_none")]
     pub content: Option<String>,
-    #[serde(rename = "role", skip_serializing_if = "Option::is_none")]
-    pub role: Option<String>,
-    #[serde(rename = "tool_calls", skip_serializing_if = "Option::is_none")]
-    pub tool_calls: Option<serde_json::Value>,
+    #[serde(rename = "score", skip_serializing_if = "Option::is_none")]
+    pub score: Option<f64>,
+    #[serde(rename = "title", skip_serializing_if = "Option::is_none")]
+    pub title: Option<String>,
+    #[serde(rename = "url", skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
-impl ApiChatMessage {
-    pub fn new() -> ApiChatMessage {
-        ApiChatMessage {
+impl WebsearchItem {
+    pub fn new() -> WebsearchItem {
+        WebsearchItem {
             content: None,
-            role: None,
-            tool_calls: None,
+            score: None,
+            title: None,
+            url: None,
         }
     }
 }

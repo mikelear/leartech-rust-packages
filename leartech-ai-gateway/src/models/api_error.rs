@@ -12,7 +12,7 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct ApiApiError {
+pub struct ApiError {
     #[serde(rename = "code", skip_serializing_if = "Option::is_none")]
     pub code: Option<String>,
     #[serde(rename = "message", skip_serializing_if = "Option::is_none")]
@@ -21,9 +21,9 @@ pub struct ApiApiError {
     pub r#type: Option<String>,
 }
 
-impl ApiApiError {
-    pub fn new() -> ApiApiError {
-        ApiApiError {
+impl ApiError {
+    pub fn new() -> ApiError {
+        ApiError {
             code: None,
             message: None,
             r#type: None,

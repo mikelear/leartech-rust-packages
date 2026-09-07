@@ -21,24 +21,24 @@ use crate::apis::ContentType;
 
 #[cfg_attr(feature = "mockall", automock)]
 #[async_trait]
-pub trait ChatApi: Send + Sync {
+pub trait WebApi: Send + Sync {
 
-    /// POST /v1/chat/completions
+    /// POST /v1/fetch
     ///
     /// 
-    async fn v1_chat_completions_post<'request>(&self, request: models::ApiChatCompletionRequest) -> Result<models::ApiChatCompletionResponse, Error<V1ChatCompletionsPostError>>;
+    async fn v1_fetch_post<>(&self, ) -> Result<models::WebfetchResult, Error<V1FetchPostError>>;
 
-    /// POST /v1/messages
+    /// POST /v1/search
     ///
     /// 
-    async fn v1_messages_post<>(&self, ) -> Result<std::collections::HashMap<String, serde_json::Value>, Error<V1MessagesPostError>>;
+    async fn v1_search_post<>(&self, ) -> Result<models::WebsearchResults, Error<V1SearchPostError>>;
 }
 
-pub struct ChatApiClient {
+pub struct WebApiClient {
     configuration: Arc<configuration::Configuration>
 }
 
-impl ChatApiClient {
+impl WebApiClient {
     pub fn new(configuration: Arc<configuration::Configuration>) -> Self {
         Self { configuration }
     }
@@ -47,19 +47,18 @@ impl ChatApiClient {
 
 
 #[async_trait]
-impl ChatApi for ChatApiClient {
-    async fn v1_chat_completions_post<'request>(&self, request: models::ApiChatCompletionRequest) -> Result<models::ApiChatCompletionResponse, Error<V1ChatCompletionsPostError>> {
+impl WebApi for WebApiClient {
+    async fn v1_fetch_post<>(&self, ) -> Result<models::WebfetchResult, Error<V1FetchPostError>> {
         let local_var_configuration = &self.configuration;
 
         let local_var_client = &local_var_configuration.client;
 
-        let local_var_uri_str = format!("{}/v1/chat/completions", local_var_configuration.base_path);
+        let local_var_uri_str = format!("{}/v1/fetch", local_var_configuration.base_path);
         let mut local_var_req_builder = local_var_client.request(reqwest::Method::POST, local_var_uri_str.as_str());
 
         if let Some(ref local_var_user_agent) = local_var_configuration.user_agent {
             local_var_req_builder = local_var_req_builder.header(reqwest::header::USER_AGENT, local_var_user_agent.clone());
         }
-        local_var_req_builder = local_var_req_builder.json(&request);
 
         let local_var_req = local_var_req_builder.build()?;
         let local_var_resp = local_var_client.execute(local_var_req).await?;
@@ -76,22 +75,22 @@ impl ChatApi for ChatApiClient {
         if !local_var_status.is_client_error() && !local_var_status.is_server_error() {
             match local_var_content_type {
                 ContentType::Json => serde_json::from_str(&local_var_content).map_err(Error::from),
-                ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ApiChatCompletionResponse`"))),
-                ContentType::Unsupported(local_var_unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{local_var_unknown_type}` content type response that cannot be converted to `models::ApiChatCompletionResponse`")))),
+                ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::WebfetchResult`"))),
+                ContentType::Unsupported(local_var_unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{local_var_unknown_type}` content type response that cannot be converted to `models::WebfetchResult`")))),
             }
         } else {
-            let local_var_entity: Option<V1ChatCompletionsPostError> = serde_json::from_str(&local_var_content).ok();
+            let local_var_entity: Option<V1FetchPostError> = serde_json::from_str(&local_var_content).ok();
             let local_var_error = ResponseContent { status: local_var_status, content: local_var_content, entity: local_var_entity };
             Err(Error::ResponseError(local_var_error))
         }
     }
 
-    async fn v1_messages_post<>(&self, ) -> Result<std::collections::HashMap<String, serde_json::Value>, Error<V1MessagesPostError>> {
+    async fn v1_search_post<>(&self, ) -> Result<models::WebsearchResults, Error<V1SearchPostError>> {
         let local_var_configuration = &self.configuration;
 
         let local_var_client = &local_var_configuration.client;
 
-        let local_var_uri_str = format!("{}/v1/messages", local_var_configuration.base_path);
+        let local_var_uri_str = format!("{}/v1/search", local_var_configuration.base_path);
         let mut local_var_req_builder = local_var_client.request(reqwest::Method::POST, local_var_uri_str.as_str());
 
         if let Some(ref local_var_user_agent) = local_var_configuration.user_agent {
@@ -113,11 +112,11 @@ impl ChatApi for ChatApiClient {
         if !local_var_status.is_client_error() && !local_var_status.is_server_error() {
             match local_var_content_type {
                 ContentType::Json => serde_json::from_str(&local_var_content).map_err(Error::from),
-                ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `std::collections::HashMap&lt;String, serde_json::Value&gt;`"))),
-                ContentType::Unsupported(local_var_unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{local_var_unknown_type}` content type response that cannot be converted to `std::collections::HashMap&lt;String, serde_json::Value&gt;`")))),
+                ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::WebsearchResults`"))),
+                ContentType::Unsupported(local_var_unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{local_var_unknown_type}` content type response that cannot be converted to `models::WebsearchResults`")))),
             }
         } else {
-            let local_var_entity: Option<V1MessagesPostError> = serde_json::from_str(&local_var_content).ok();
+            let local_var_entity: Option<V1SearchPostError> = serde_json::from_str(&local_var_content).ok();
             let local_var_error = ResponseContent { status: local_var_status, content: local_var_content, entity: local_var_entity };
             Err(Error::ResponseError(local_var_error))
         }
@@ -125,19 +124,20 @@ impl ChatApi for ChatApiClient {
 
 }
 
-/// struct for typed errors of method [`ChatApi::v1_chat_completions_post`]
+/// struct for typed errors of method [`WebApi::v1_fetch_post`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
-pub enum V1ChatCompletionsPostError {
+pub enum V1FetchPostError {
     Status400(models::ApiErrorResponse),
     Status403(models::ApiErrorResponse),
+    Status501(models::ApiErrorResponse),
     UnknownValue(serde_json::Value),
 }
 
-/// struct for typed errors of method [`ChatApi::v1_messages_post`]
+/// struct for typed errors of method [`WebApi::v1_search_post`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
-pub enum V1MessagesPostError {
+pub enum V1SearchPostError {
     Status403(models::ApiErrorResponse),
     Status501(models::ApiErrorResponse),
     UnknownValue(serde_json::Value),
