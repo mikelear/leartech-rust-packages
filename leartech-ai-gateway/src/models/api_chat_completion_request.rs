@@ -16,25 +16,32 @@ pub struct ApiChatCompletionRequest {
     #[serde(rename = "max_tokens", skip_serializing_if = "Option::is_none")]
     pub max_tokens: Option<i32>,
     #[serde(rename = "messages")]
-    pub messages: Vec<models::ApiChatMessage>,
+    pub messages: Vec<models::ApiRequestMessage>,
     #[serde(rename = "model")]
     pub model: String,
     #[serde(rename = "stream", skip_serializing_if = "Option::is_none")]
     pub stream: Option<bool>,
     #[serde(rename = "temperature", skip_serializing_if = "Option::is_none")]
     pub temperature: Option<f64>,
+    #[serde(rename = "tool_choice", skip_serializing_if = "Option::is_none")]
+    pub tool_choice: Option<serde_json::Value>,
+    /// S7b passthrough: forwarded verbatim to OpenAI-compatible providers.
+    #[serde(rename = "tools", skip_serializing_if = "Option::is_none")]
+    pub tools: Option<serde_json::Value>,
     #[serde(rename = "x_leartech", skip_serializing_if = "Option::is_none")]
     pub x_leartech: Option<Box<models::ApiLeartechExt>>,
 }
 
 impl ApiChatCompletionRequest {
-    pub fn new(messages: Vec<models::ApiChatMessage>, model: String) -> ApiChatCompletionRequest {
+    pub fn new(messages: Vec<models::ApiRequestMessage>, model: String) -> ApiChatCompletionRequest {
         ApiChatCompletionRequest {
             max_tokens: None,
             messages,
             model,
             stream: None,
             temperature: None,
+            tool_choice: None,
+            tools: None,
             x_leartech: None,
         }
     }

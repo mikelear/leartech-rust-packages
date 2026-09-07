@@ -123,6 +123,7 @@ impl From<&str> for ContentType {
 pub mod chat_api;
 pub mod embeddings_api;
 pub mod models_api;
+pub mod web_api;
 
 pub mod configuration;
 
@@ -132,12 +133,14 @@ pub trait Api {
     fn chat_api(&self) -> &dyn chat_api::ChatApi;
     fn embeddings_api(&self) -> &dyn embeddings_api::EmbeddingsApi;
     fn models_api(&self) -> &dyn models_api::ModelsApi;
+    fn web_api(&self) -> &dyn web_api::WebApi;
 }
 
 pub struct ApiClient {
     chat_api: Box<dyn chat_api::ChatApi>,
     embeddings_api: Box<dyn embeddings_api::EmbeddingsApi>,
     models_api: Box<dyn models_api::ModelsApi>,
+    web_api: Box<dyn web_api::WebApi>,
 }
 
 impl ApiClient {
@@ -146,6 +149,7 @@ impl ApiClient {
             chat_api: Box::new(chat_api::ChatApiClient::new(configuration.clone())),
             embeddings_api: Box::new(embeddings_api::EmbeddingsApiClient::new(configuration.clone())),
             models_api: Box::new(models_api::ModelsApiClient::new(configuration.clone())),
+            web_api: Box::new(web_api::WebApiClient::new(configuration.clone())),
         }
     }
 }
@@ -160,6 +164,9 @@ impl Api for ApiClient {
     fn models_api(&self) -> &dyn models_api::ModelsApi {
         self.models_api.as_ref()
     }
+    fn web_api(&self) -> &dyn web_api::WebApi {
+        self.web_api.as_ref()
+    }
 }
 
 #[cfg(feature = "mockall")]
@@ -167,6 +174,7 @@ pub struct MockApiClient {
     pub chat_api_mock: chat_api::MockChatApi,
     pub embeddings_api_mock: embeddings_api::MockEmbeddingsApi,
     pub models_api_mock: models_api::MockModelsApi,
+    pub web_api_mock: web_api::MockWebApi,
 }
 
 #[cfg(feature = "mockall")]
@@ -176,6 +184,7 @@ impl MockApiClient {
             chat_api_mock: chat_api::MockChatApi::new(),
             embeddings_api_mock: embeddings_api::MockEmbeddingsApi::new(),
             models_api_mock: models_api::MockModelsApi::new(),
+            web_api_mock: web_api::MockWebApi::new(),
         }
     }
 }
@@ -190,6 +199,9 @@ impl Api for MockApiClient {
     }
     fn models_api(&self) -> &dyn models_api::ModelsApi {
         &self.models_api_mock
+    }
+    fn web_api(&self) -> &dyn web_api::WebApi {
+        &self.web_api_mock
     }
 }
 

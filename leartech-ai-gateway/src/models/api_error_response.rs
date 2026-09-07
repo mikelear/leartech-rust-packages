@@ -14,7 +14,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ApiErrorResponse {
     #[serde(rename = "error", skip_serializing_if = "Option::is_none")]
-    pub error: Option<Box<models::ApiApiError>>,
+    pub error: Option<Box<models::ApiError>>,
 }
 
 impl ApiErrorResponse {

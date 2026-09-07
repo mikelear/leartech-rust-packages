@@ -12,20 +12,26 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct ApiChatMessage {
+pub struct ApiRequestMessage {
     #[serde(rename = "content", skip_serializing_if = "Option::is_none")]
-    pub content: Option<String>,
+    pub content: Option<serde_json::Value>,
+    #[serde(rename = "name", skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     #[serde(rename = "role", skip_serializing_if = "Option::is_none")]
     pub role: Option<String>,
+    #[serde(rename = "tool_call_id", skip_serializing_if = "Option::is_none")]
+    pub tool_call_id: Option<String>,
     #[serde(rename = "tool_calls", skip_serializing_if = "Option::is_none")]
     pub tool_calls: Option<serde_json::Value>,
 }
 
-impl ApiChatMessage {
-    pub fn new() -> ApiChatMessage {
-        ApiChatMessage {
+impl ApiRequestMessage {
+    pub fn new() -> ApiRequestMessage {
+        ApiRequestMessage {
             content: None,
+            name: None,
             role: None,
+            tool_call_id: None,
             tool_calls: None,
         }
     }
