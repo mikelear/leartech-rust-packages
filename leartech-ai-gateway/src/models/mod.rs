@@ -1,3 +1,5 @@
+pub mod api_amend_key_request;
+pub use self::api_amend_key_request::ApiAmendKeyRequest;
 pub mod api_chat_completion_request;
 pub use self::api_chat_completion_request::ApiChatCompletionRequest;
 pub mod api_chat_completion_response;

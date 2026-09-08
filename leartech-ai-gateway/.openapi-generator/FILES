@@ -4,6 +4,7 @@
 Cargo.toml
 README.md
 docs/AdminApi.md
+docs/ApiAmendKeyRequest.md
 docs/ApiChatCompletionRequest.md
 docs/ApiChatCompletionResponse.md
 docs/ApiChatMessage.md
@@ -37,6 +38,7 @@ src/apis/mod.rs
 src/apis/models_api.rs
 src/apis/web_api.rs
 src/lib.rs
+src/models/api_amend_key_request.rs
 src/models/api_chat_completion_request.rs
 src/models/api_chat_completion_response.rs
 src/models/api_chat_message.rs
