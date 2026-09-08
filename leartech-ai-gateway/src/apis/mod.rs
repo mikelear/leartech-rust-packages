@@ -120,6 +120,7 @@ impl From<&str> for ContentType {
     }
 }
 
+pub mod admin_api;
 pub mod chat_api;
 pub mod embeddings_api;
 pub mod models_api;
@@ -130,6 +131,7 @@ pub mod configuration;
 use std::sync::Arc;
 
 pub trait Api {
+    fn admin_api(&self) -> &dyn admin_api::AdminApi;
     fn chat_api(&self) -> &dyn chat_api::ChatApi;
     fn embeddings_api(&self) -> &dyn embeddings_api::EmbeddingsApi;
     fn models_api(&self) -> &dyn models_api::ModelsApi;
@@ -137,6 +139,7 @@ pub trait Api {
 }
 
 pub struct ApiClient {
+    admin_api: Box<dyn admin_api::AdminApi>,
     chat_api: Box<dyn chat_api::ChatApi>,
     embeddings_api: Box<dyn embeddings_api::EmbeddingsApi>,
     models_api: Box<dyn models_api::ModelsApi>,
@@ -146,6 +149,7 @@ pub struct ApiClient {
 impl ApiClient {
     pub fn new(configuration: Arc<configuration::Configuration>) -> Self {
         Self {
+            admin_api: Box::new(admin_api::AdminApiClient::new(configuration.clone())),
             chat_api: Box::new(chat_api::ChatApiClient::new(configuration.clone())),
             embeddings_api: Box::new(embeddings_api::EmbeddingsApiClient::new(configuration.clone())),
             models_api: Box::new(models_api::ModelsApiClient::new(configuration.clone())),
@@ -155,6 +159,9 @@ impl ApiClient {
 }
 
 impl Api for ApiClient {
+    fn admin_api(&self) -> &dyn admin_api::AdminApi {
+        self.admin_api.as_ref()
+    }
     fn chat_api(&self) -> &dyn chat_api::ChatApi {
         self.chat_api.as_ref()
     }
@@ -171,6 +178,7 @@ impl Api for ApiClient {
 
 #[cfg(feature = "mockall")]
 pub struct MockApiClient {
+    pub admin_api_mock: admin_api::MockAdminApi,
     pub chat_api_mock: chat_api::MockChatApi,
     pub embeddings_api_mock: embeddings_api::MockEmbeddingsApi,
     pub models_api_mock: models_api::MockModelsApi,
@@ -181,6 +189,7 @@ pub struct MockApiClient {
 impl MockApiClient {
     pub fn new() -> Self {
         Self {
+            admin_api_mock: admin_api::MockAdminApi::new(),
             chat_api_mock: chat_api::MockChatApi::new(),
             embeddings_api_mock: embeddings_api::MockEmbeddingsApi::new(),
             models_api_mock: models_api::MockModelsApi::new(),
@@ -191,6 +200,9 @@ impl MockApiClient {
 
 #[cfg(feature = "mockall")]
 impl Api for MockApiClient {
+    fn admin_api(&self) -> &dyn admin_api::AdminApi {
+        &self.admin_api_mock
+    }
     fn chat_api(&self) -> &dyn chat_api::ChatApi {
         &self.chat_api_mock
     }
