@@ -33,6 +33,11 @@ pub trait AdminApi: Send + Sync {
     /// 
     async fn admin_v1_keys_keyid_delete<'keyid>(&self, keyid: &'keyid str) -> Result<(), Error<AdminV1KeysKeyidDeleteError>>;
 
+    /// PATCH /admin/v1/keys/{keyid}
+    ///
+    /// 
+    async fn admin_v1_keys_keyid_patch<'keyid, 'request>(&self, keyid: &'keyid str, request: models::ApiAmendKeyRequest) -> Result<models::ApiListKeysResponse, Error<AdminV1KeysKeyidPatchError>>;
+
     /// POST /admin/v1/keys/{keyid}/rotate
     ///
     /// 
@@ -122,6 +127,44 @@ impl AdminApi for AdminApiClient {
             Ok(())
         } else {
             let local_var_entity: Option<AdminV1KeysKeyidDeleteError> = serde_json::from_str(&local_var_content).ok();
+            let local_var_error = ResponseContent { status: local_var_status, content: local_var_content, entity: local_var_entity };
+            Err(Error::ResponseError(local_var_error))
+        }
+    }
+
+    async fn admin_v1_keys_keyid_patch<'keyid, 'request>(&self, keyid: &'keyid str, request: models::ApiAmendKeyRequest) -> Result<models::ApiListKeysResponse, Error<AdminV1KeysKeyidPatchError>> {
+        let local_var_configuration = &self.configuration;
+
+        let local_var_client = &local_var_configuration.client;
+
+        let local_var_uri_str = format!("{}/admin/v1/keys/{keyid}", local_var_configuration.base_path, keyid=crate::apis::urlencode(keyid));
+        let mut local_var_req_builder = local_var_client.request(reqwest::Method::PATCH, local_var_uri_str.as_str());
+
+        if let Some(ref local_var_user_agent) = local_var_configuration.user_agent {
+            local_var_req_builder = local_var_req_builder.header(reqwest::header::USER_AGENT, local_var_user_agent.clone());
+        }
+        local_var_req_builder = local_var_req_builder.json(&request);
+
+        let local_var_req = local_var_req_builder.build()?;
+        let local_var_resp = local_var_client.execute(local_var_req).await?;
+
+        let local_var_status = local_var_resp.status();
+        let local_var_content_type = local_var_resp
+            .headers()
+            .get("content-type")
+            .and_then(|v| v.to_str().ok())
+            .unwrap_or("application/octet-stream");
+        let local_var_content_type = super::ContentType::from(local_var_content_type);
+        let local_var_content = local_var_resp.text().await?;
+
+        if !local_var_status.is_client_error() && !local_var_status.is_server_error() {
+            match local_var_content_type {
+                ContentType::Json => serde_json::from_str(&local_var_content).map_err(Error::from),
+                ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ApiListKeysResponse`"))),
+                ContentType::Unsupported(local_var_unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{local_var_unknown_type}` content type response that cannot be converted to `models::ApiListKeysResponse`")))),
+            }
+        } else {
+            let local_var_entity: Option<AdminV1KeysKeyidPatchError> = serde_json::from_str(&local_var_content).ok();
             let local_var_error = ResponseContent { status: local_var_status, content: local_var_content, entity: local_var_entity };
             Err(Error::ResponseError(local_var_error))
         }
@@ -253,6 +296,16 @@ pub enum AdminV1KeysGetError {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum AdminV1KeysKeyidDeleteError {
+    Status403(models::ApiErrorResponse),
+    Status404(models::ApiErrorResponse),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`AdminApi::admin_v1_keys_keyid_patch`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum AdminV1KeysKeyidPatchError {
+    Status400(models::ApiErrorResponse),
     Status403(models::ApiErrorResponse),
     Status404(models::ApiErrorResponse),
     UnknownValue(serde_json::Value),
