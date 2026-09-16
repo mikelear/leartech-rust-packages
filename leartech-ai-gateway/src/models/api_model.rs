@@ -22,6 +22,11 @@ pub struct ApiModel {
     pub object: Option<String>,
     #[serde(rename = "owned_by", skip_serializing_if = "Option::is_none")]
     pub owned_by: Option<String>,
+    /// Provider is the supplier that answers (anthropic, deepseek, ollama, azure-openai, litellm); ProviderModel is the concrete model it serves.  The catalog is three levels -- supplier, logical alias, concrete model -- and this response published only the middle one. A caller could not tell that \"claude\" means claude-opus-4-8 via anthropic, nor that glm/codestral/mistral-large are one LiteLLM supplier rather than three. owned_by was the only hint and it is the constant \"leartech\" for every row, so it distinguished nothing.  The reviewer already logs provider + model_served per call, so the distinction existed everywhere except here.  source: model_catalog(logical_model, provider_model, adapter) -- migration 00001
+    #[serde(rename = "provider", skip_serializing_if = "Option::is_none")]
+    pub provider: Option<String>,
+    #[serde(rename = "provider_model", skip_serializing_if = "Option::is_none")]
+    pub provider_model: Option<String>,
     #[serde(rename = "vision", skip_serializing_if = "Option::is_none")]
     pub vision: Option<bool>,
 }
@@ -33,6 +38,8 @@ impl ApiModel {
             max_ctx: None,
             object: None,
             owned_by: None,
+            provider: None,
+            provider_model: None,
             vision: None,
         }
     }
