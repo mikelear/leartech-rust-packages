@@ -32,6 +32,8 @@ pub mod api_usage;
 pub use self::api_usage::ApiUsage;
 pub mod api_usage_response;
 pub use self::api_usage_response::ApiUsageResponse;
+pub mod api_version_response;
+pub use self::api_version_response::ApiVersionResponse;
 pub mod store_usage_row;
 pub use self::store_usage_row::StoreUsageRow;
 pub mod webfetch_result;
