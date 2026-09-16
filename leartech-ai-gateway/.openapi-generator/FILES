@@ -21,8 +21,10 @@ docs/ApiModelsResponse.md
 docs/ApiRequestMessage.md
 docs/ApiUsage.md
 docs/ApiUsageResponse.md
+docs/ApiVersionResponse.md
 docs/ChatApi.md
 docs/EmbeddingsApi.md
+docs/MetaApi.md
 docs/ModelsApi.md
 docs/StoreUsageRow.md
 docs/WebApi.md
@@ -34,6 +36,7 @@ src/apis/admin_api.rs
 src/apis/chat_api.rs
 src/apis/configuration.rs
 src/apis/embeddings_api.rs
+src/apis/meta_api.rs
 src/apis/mod.rs
 src/apis/models_api.rs
 src/apis/web_api.rs
@@ -55,6 +58,7 @@ src/models/api_models_response.rs
 src/models/api_request_message.rs
 src/models/api_usage.rs
 src/models/api_usage_response.rs
+src/models/api_version_response.rs
 src/models/mod.rs
 src/models/store_usage_row.rs
 src/models/webfetch_result.rs

@@ -123,6 +123,7 @@ impl From<&str> for ContentType {
 pub mod admin_api;
 pub mod chat_api;
 pub mod embeddings_api;
+pub mod meta_api;
 pub mod models_api;
 pub mod web_api;
 
@@ -134,6 +135,7 @@ pub trait Api {
     fn admin_api(&self) -> &dyn admin_api::AdminApi;
     fn chat_api(&self) -> &dyn chat_api::ChatApi;
     fn embeddings_api(&self) -> &dyn embeddings_api::EmbeddingsApi;
+    fn meta_api(&self) -> &dyn meta_api::MetaApi;
     fn models_api(&self) -> &dyn models_api::ModelsApi;
     fn web_api(&self) -> &dyn web_api::WebApi;
 }
@@ -142,6 +144,7 @@ pub struct ApiClient {
     admin_api: Box<dyn admin_api::AdminApi>,
     chat_api: Box<dyn chat_api::ChatApi>,
     embeddings_api: Box<dyn embeddings_api::EmbeddingsApi>,
+    meta_api: Box<dyn meta_api::MetaApi>,
     models_api: Box<dyn models_api::ModelsApi>,
     web_api: Box<dyn web_api::WebApi>,
 }
@@ -152,6 +155,7 @@ impl ApiClient {
             admin_api: Box::new(admin_api::AdminApiClient::new(configuration.clone())),
             chat_api: Box::new(chat_api::ChatApiClient::new(configuration.clone())),
             embeddings_api: Box::new(embeddings_api::EmbeddingsApiClient::new(configuration.clone())),
+            meta_api: Box::new(meta_api::MetaApiClient::new(configuration.clone())),
             models_api: Box::new(models_api::ModelsApiClient::new(configuration.clone())),
             web_api: Box::new(web_api::WebApiClient::new(configuration.clone())),
         }
@@ -168,6 +172,9 @@ impl Api for ApiClient {
     fn embeddings_api(&self) -> &dyn embeddings_api::EmbeddingsApi {
         self.embeddings_api.as_ref()
     }
+    fn meta_api(&self) -> &dyn meta_api::MetaApi {
+        self.meta_api.as_ref()
+    }
     fn models_api(&self) -> &dyn models_api::ModelsApi {
         self.models_api.as_ref()
     }
@@ -181,6 +188,7 @@ pub struct MockApiClient {
     pub admin_api_mock: admin_api::MockAdminApi,
     pub chat_api_mock: chat_api::MockChatApi,
     pub embeddings_api_mock: embeddings_api::MockEmbeddingsApi,
+    pub meta_api_mock: meta_api::MockMetaApi,
     pub models_api_mock: models_api::MockModelsApi,
     pub web_api_mock: web_api::MockWebApi,
 }
@@ -192,6 +200,7 @@ impl MockApiClient {
             admin_api_mock: admin_api::MockAdminApi::new(),
             chat_api_mock: chat_api::MockChatApi::new(),
             embeddings_api_mock: embeddings_api::MockEmbeddingsApi::new(),
+            meta_api_mock: meta_api::MockMetaApi::new(),
             models_api_mock: models_api::MockModelsApi::new(),
             web_api_mock: web_api::MockWebApi::new(),
         }
@@ -208,6 +217,9 @@ impl Api for MockApiClient {
     }
     fn embeddings_api(&self) -> &dyn embeddings_api::EmbeddingsApi {
         &self.embeddings_api_mock
+    }
+    fn meta_api(&self) -> &dyn meta_api::MetaApi {
+        &self.meta_api_mock
     }
     fn models_api(&self) -> &dyn models_api::ModelsApi {
         &self.models_api_mock
