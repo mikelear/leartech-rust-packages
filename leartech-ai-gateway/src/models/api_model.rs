@@ -13,8 +13,13 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ApiModel {
+    #[serde(rename = "hosting", skip_serializing_if = "Option::is_none")]
+    pub hosting: Option<String>,
     #[serde(rename = "id", skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
+    /// Provider is the supplier that answers (anthropic, deepseek, ollama, azure-openai, litellm); ProviderModel is the concrete model it serves.  The catalog is three levels -- supplier, logical alias, concrete model -- and this response published only the middle one. A caller could not tell that \"claude\" means claude-opus-4-8 via anthropic, nor that glm/codestral/mistral-large are one LiteLLM supplier rather than three. owned_by was the only hint and it is the constant \"leartech\" for every row, so it distinguished nothing.  The reviewer already logs provider + model_served per call, so the distinction existed everywhere except here.  RENAMED FROM `provider` IN 00023. It holds the ADAPTER -- how we reach the model -- and calling that the provider is the conflation 00023 removes: glm, codestral and qwen-via-litellm all answer \"litellm\" here and are z.ai, Mistral and our own Ollama. `provider` now means whose model it is, below.  source: model_catalog(logical_model, provider_model, adapter) -- migration 00001
+    #[serde(rename = "interface", skip_serializing_if = "Option::is_none")]
+    pub interface: Option<String>,
     /// Capabilities/limits so callers can cap what they can't otherwise see (INTERFACES.md §4 \"degrade visibly, never silently\"). max_ctx is the model's context window; vision reports image-input support.
     #[serde(rename = "max_ctx", skip_serializing_if = "Option::is_none")]
     pub max_ctx: Option<i32>,
@@ -22,7 +27,7 @@ pub struct ApiModel {
     pub object: Option<String>,
     #[serde(rename = "owned_by", skip_serializing_if = "Option::is_none")]
     pub owned_by: Option<String>,
-    /// Provider is the supplier that answers (anthropic, deepseek, ollama, azure-openai, litellm); ProviderModel is the concrete model it serves.  The catalog is three levels -- supplier, logical alias, concrete model -- and this response published only the middle one. A caller could not tell that \"claude\" means claude-opus-4-8 via anthropic, nor that glm/codestral/mistral-large are one LiteLLM supplier rather than three. owned_by was the only hint and it is the constant \"leartech\" for every row, so it distinguished nothing.  The reviewer already logs provider + model_served per call, so the distinction existed everywhere except here.  source: model_catalog(logical_model, provider_model, adapter) -- migration 00001
+    /// Provider is WHOSE model it is; Hosting is where the weights run.  Empty when the row is unseeded, so a client can tell \"unknown\" from \"leartech\" rather than defaulting a third party to us. proven-by: TestProvenance_TheLiteLLMModelsAreNotOneSupplier
     #[serde(rename = "provider", skip_serializing_if = "Option::is_none")]
     pub provider: Option<String>,
     #[serde(rename = "provider_model", skip_serializing_if = "Option::is_none")]
@@ -34,7 +39,9 @@ pub struct ApiModel {
 impl ApiModel {
     pub fn new() -> ApiModel {
         ApiModel {
+            hosting: None,
             id: None,
+            interface: None,
             max_ctx: None,
             object: None,
             owned_by: None,
