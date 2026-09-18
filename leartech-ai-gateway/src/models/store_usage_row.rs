@@ -13,6 +13,15 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct StoreUsageRow {
+    #[serde(rename = "cache_read_tokens", skip_serializing_if = "Option::is_none")]
+    pub cache_read_tokens: Option<i32>,
+    #[serde(rename = "cache_write_1h_tokens", skip_serializing_if = "Option::is_none")]
+    pub cache_write_1h_tokens: Option<i32>,
+    #[serde(rename = "cache_write_5m_tokens", skip_serializing_if = "Option::is_none")]
+    pub cache_write_5m_tokens: Option<i32>,
+    /// CacheableCalls is how many of Calls were served by a supplier that reports a cache at all.  THE DENOMINATOR. Without it a hit rate is reads over ALL calls, which counts traffic to suppliers with no prompt cache as traffic that failed to hit one -- so a self-hosted model reads as a broken cache rather than an absent one. Measured 2026-09-18: glm returns no cache information whatsoever, claude returns 2688 cached tokens; in a sum those are indistinguishable without this.
+    #[serde(rename = "cacheable_calls", skip_serializing_if = "Option::is_none")]
+    pub cacheable_calls: Option<i32>,
     #[serde(rename = "calls", skip_serializing_if = "Option::is_none")]
     pub calls: Option<i32>,
     #[serde(rename = "completion_tokens", skip_serializing_if = "Option::is_none")]
@@ -30,6 +39,10 @@ pub struct StoreUsageRow {
 impl StoreUsageRow {
     pub fn new() -> StoreUsageRow {
         StoreUsageRow {
+            cache_read_tokens: None,
+            cache_write_1h_tokens: None,
+            cache_write_5m_tokens: None,
+            cacheable_calls: None,
             calls: None,
             completion_tokens: None,
             cost_micros: None,
