@@ -14,10 +14,12 @@ docs/ApiCreateKeyResponse.md
 docs/ApiError.md
 docs/ApiErrorResponse.md
 docs/ApiKeyView.md
+docs/ApiLeartechCache.md
 docs/ApiLeartechExt.md
 docs/ApiListKeysResponse.md
 docs/ApiModel.md
 docs/ApiModelsResponse.md
+docs/ApiPromptTokensDetails.md
 docs/ApiRequestMessage.md
 docs/ApiUsage.md
 docs/ApiUsageResponse.md
@@ -51,10 +53,12 @@ src/models/api_create_key_response.rs
 src/models/api_error.rs
 src/models/api_error_response.rs
 src/models/api_key_view.rs
+src/models/api_leartech_cache.rs
 src/models/api_leartech_ext.rs
 src/models/api_list_keys_response.rs
 src/models/api_model.rs
 src/models/api_models_response.rs
+src/models/api_prompt_tokens_details.rs
 src/models/api_request_message.rs
 src/models/api_usage.rs
 src/models/api_usage_response.rs
