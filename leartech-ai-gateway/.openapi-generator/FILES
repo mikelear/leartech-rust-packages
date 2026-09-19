@@ -21,6 +21,7 @@ docs/ApiModel.md
 docs/ApiModelsResponse.md
 docs/ApiPromptTokensDetails.md
 docs/ApiRequestMessage.md
+docs/ApiStreamOptions.md
 docs/ApiUsage.md
 docs/ApiUsageResponse.md
 docs/ApiVersionResponse.md
@@ -60,6 +61,7 @@ src/models/api_model.rs
 src/models/api_models_response.rs
 src/models/api_prompt_tokens_details.rs
 src/models/api_request_message.rs
+src/models/api_stream_options.rs
 src/models/api_usage.rs
 src/models/api_usage_response.rs
 src/models/api_version_response.rs

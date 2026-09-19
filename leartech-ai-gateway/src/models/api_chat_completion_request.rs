@@ -21,6 +21,9 @@ pub struct ApiChatCompletionRequest {
     pub model: String,
     #[serde(rename = "stream", skip_serializing_if = "Option::is_none")]
     pub stream: Option<bool>,
+    /// StreamOptions.IncludeUsage asks for a final chunk carrying the token and cache breakdown, the same shape OpenAI emits and the same one openai.go already sends UPSTREAM and parses back.  The gateway received usage on every streamed call, billed with it, and dropped it before the client -- so a streamed turn was the least visible traffic on the system while being the highest volume an agent loop produces. Found by the CLI session building the first streaming consumer.
+    #[serde(rename = "stream_options", skip_serializing_if = "Option::is_none")]
+    pub stream_options: Option<Box<models::ApiStreamOptions>>,
     #[serde(rename = "temperature", skip_serializing_if = "Option::is_none")]
     pub temperature: Option<f64>,
     #[serde(rename = "tool_choice", skip_serializing_if = "Option::is_none")]
@@ -39,6 +42,7 @@ impl ApiChatCompletionRequest {
             messages,
             model,
             stream: None,
+            stream_options: None,
             temperature: None,
             tool_choice: None,
             tools: None,

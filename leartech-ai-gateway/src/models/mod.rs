@@ -32,6 +32,8 @@ pub mod api_prompt_tokens_details;
 pub use self::api_prompt_tokens_details::ApiPromptTokensDetails;
 pub mod api_request_message;
 pub use self::api_request_message::ApiRequestMessage;
+pub mod api_stream_options;
+pub use self::api_stream_options::ApiStreamOptions;
 pub mod api_usage;
 pub use self::api_usage::ApiUsage;
 pub mod api_usage_response;
