@@ -22,6 +22,9 @@ docs/ApiModelsResponse.md
 docs/ApiPromptTokensDetails.md
 docs/ApiRequestMessage.md
 docs/ApiStreamOptions.md
+docs/ApiTool.md
+docs/ApiToolFunction.md
+docs/ApiToolsResponse.md
 docs/ApiUsage.md
 docs/ApiUsageResponse.md
 docs/ApiVersionResponse.md
@@ -30,6 +33,7 @@ docs/EmbeddingsApi.md
 docs/MetaApi.md
 docs/ModelsApi.md
 docs/StoreUsageRow.md
+docs/ToolsApi.md
 docs/WebApi.md
 docs/WebfetchResult.md
 docs/WebsearchItem.md
@@ -42,6 +46,7 @@ src/apis/embeddings_api.rs
 src/apis/meta_api.rs
 src/apis/mod.rs
 src/apis/models_api.rs
+src/apis/tools_api.rs
 src/apis/web_api.rs
 src/lib.rs
 src/models/api_amend_key_request.rs
@@ -62,6 +67,9 @@ src/models/api_models_response.rs
 src/models/api_prompt_tokens_details.rs
 src/models/api_request_message.rs
 src/models/api_stream_options.rs
+src/models/api_tool.rs
+src/models/api_tool_function.rs
+src/models/api_tools_response.rs
 src/models/api_usage.rs
 src/models/api_usage_response.rs
 src/models/api_version_response.rs
