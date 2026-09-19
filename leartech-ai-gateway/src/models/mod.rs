@@ -30,6 +30,8 @@ pub mod api_models_response;
 pub use self::api_models_response::ApiModelsResponse;
 pub mod api_prompt_tokens_details;
 pub use self::api_prompt_tokens_details::ApiPromptTokensDetails;
+pub mod api_protected_resource_metadata;
+pub use self::api_protected_resource_metadata::ApiProtectedResourceMetadata;
 pub mod api_request_message;
 pub use self::api_request_message::ApiRequestMessage;
 pub mod api_stream_options;
