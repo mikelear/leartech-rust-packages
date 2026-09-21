@@ -123,6 +123,7 @@ impl From<&str> for ContentType {
 pub mod clients_api;
 pub mod example_api;
 pub mod health_api;
+pub mod shell_api;
 
 pub mod configuration;
 
@@ -132,12 +133,14 @@ pub trait Api {
     fn clients_api(&self) -> &dyn clients_api::ClientsApi;
     fn example_api(&self) -> &dyn example_api::ExampleApi;
     fn health_api(&self) -> &dyn health_api::HealthApi;
+    fn shell_api(&self) -> &dyn shell_api::ShellApi;
 }
 
 pub struct ApiClient {
     clients_api: Box<dyn clients_api::ClientsApi>,
     example_api: Box<dyn example_api::ExampleApi>,
     health_api: Box<dyn health_api::HealthApi>,
+    shell_api: Box<dyn shell_api::ShellApi>,
 }
 
 impl ApiClient {
@@ -146,6 +149,7 @@ impl ApiClient {
             clients_api: Box::new(clients_api::ClientsApiClient::new(configuration.clone())),
             example_api: Box::new(example_api::ExampleApiClient::new(configuration.clone())),
             health_api: Box::new(health_api::HealthApiClient::new(configuration.clone())),
+            shell_api: Box::new(shell_api::ShellApiClient::new(configuration.clone())),
         }
     }
 }
@@ -160,6 +164,9 @@ impl Api for ApiClient {
     fn health_api(&self) -> &dyn health_api::HealthApi {
         self.health_api.as_ref()
     }
+    fn shell_api(&self) -> &dyn shell_api::ShellApi {
+        self.shell_api.as_ref()
+    }
 }
 
 #[cfg(feature = "mockall")]
@@ -167,6 +174,7 @@ pub struct MockApiClient {
     pub clients_api_mock: clients_api::MockClientsApi,
     pub example_api_mock: example_api::MockExampleApi,
     pub health_api_mock: health_api::MockHealthApi,
+    pub shell_api_mock: shell_api::MockShellApi,
 }
 
 #[cfg(feature = "mockall")]
@@ -176,6 +184,7 @@ impl MockApiClient {
             clients_api_mock: clients_api::MockClientsApi::new(),
             example_api_mock: example_api::MockExampleApi::new(),
             health_api_mock: health_api::MockHealthApi::new(),
+            shell_api_mock: shell_api::MockShellApi::new(),
         }
     }
 }
@@ -190,6 +199,9 @@ impl Api for MockApiClient {
     }
     fn health_api(&self) -> &dyn health_api::HealthApi {
         &self.health_api_mock
+    }
+    fn shell_api(&self) -> &dyn shell_api::ShellApi {
+        &self.shell_api_mock
     }
 }
 
