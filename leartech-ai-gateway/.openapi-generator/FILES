@@ -19,6 +19,8 @@ docs/ApiLeartechExt.md
 docs/ApiListKeysResponse.md
 docs/ApiModel.md
 docs/ApiModelsResponse.md
+docs/ApiPricingModel.md
+docs/ApiPricingResponse.md
 docs/ApiPromptTokensDetails.md
 docs/ApiProtectedResourceMetadata.md
 docs/ApiRequestMessage.md
@@ -65,6 +67,8 @@ src/models/api_leartech_ext.rs
 src/models/api_list_keys_response.rs
 src/models/api_model.rs
 src/models/api_models_response.rs
+src/models/api_pricing_model.rs
+src/models/api_pricing_response.rs
 src/models/api_prompt_tokens_details.rs
 src/models/api_protected_resource_metadata.rs
 src/models/api_request_message.rs
