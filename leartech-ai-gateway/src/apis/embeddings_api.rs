@@ -26,7 +26,7 @@ pub trait EmbeddingsApi: Send + Sync {
     /// POST /v1/embeddings
     ///
     /// 
-    async fn v1_embeddings_post<>(&self, ) -> Result<(), Error<V1EmbeddingsPostError>>;
+    async fn v1_embeddings_post<'request>(&self, request: serde_json::Value) -> Result<models::ApiEmbeddingsResponse, Error<V1EmbeddingsPostError>>;
 }
 
 pub struct EmbeddingsApiClient {
@@ -43,7 +43,7 @@ impl EmbeddingsApiClient {
 
 #[async_trait]
 impl EmbeddingsApi for EmbeddingsApiClient {
-    async fn v1_embeddings_post<>(&self, ) -> Result<(), Error<V1EmbeddingsPostError>> {
+    async fn v1_embeddings_post<'request>(&self, request: serde_json::Value) -> Result<models::ApiEmbeddingsResponse, Error<V1EmbeddingsPostError>> {
         let local_var_configuration = &self.configuration;
 
         let local_var_client = &local_var_configuration.client;
@@ -54,15 +54,26 @@ impl EmbeddingsApi for EmbeddingsApiClient {
         if let Some(ref local_var_user_agent) = local_var_configuration.user_agent {
             local_var_req_builder = local_var_req_builder.header(reqwest::header::USER_AGENT, local_var_user_agent.clone());
         }
+        local_var_req_builder = local_var_req_builder.json(&request);
 
         let local_var_req = local_var_req_builder.build()?;
         let local_var_resp = local_var_client.execute(local_var_req).await?;
 
         let local_var_status = local_var_resp.status();
+        let local_var_content_type = local_var_resp
+            .headers()
+            .get("content-type")
+            .and_then(|v| v.to_str().ok())
+            .unwrap_or("application/octet-stream");
+        let local_var_content_type = super::ContentType::from(local_var_content_type);
         let local_var_content = local_var_resp.text().await?;
 
         if !local_var_status.is_client_error() && !local_var_status.is_server_error() {
-            Ok(())
+            match local_var_content_type {
+                ContentType::Json => serde_json::from_str(&local_var_content).map_err(Error::from),
+                ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ApiEmbeddingsResponse`"))),
+                ContentType::Unsupported(local_var_unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{local_var_unknown_type}` content type response that cannot be converted to `models::ApiEmbeddingsResponse`")))),
+            }
         } else {
             let local_var_entity: Option<V1EmbeddingsPostError> = serde_json::from_str(&local_var_content).ok();
             let local_var_error = ResponseContent { status: local_var_status, content: local_var_content, entity: local_var_entity };
@@ -76,7 +87,8 @@ impl EmbeddingsApi for EmbeddingsApiClient {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum V1EmbeddingsPostError {
-    Status501(models::ApiErrorResponse),
+    Status400(models::ApiErrorResponse),
+    Status403(models::ApiErrorResponse),
     UnknownValue(serde_json::Value),
 }
 
