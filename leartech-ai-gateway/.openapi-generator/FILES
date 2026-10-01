@@ -11,6 +11,8 @@ docs/ApiChatMessage.md
 docs/ApiChoice.md
 docs/ApiCreateKeyRequest.md
 docs/ApiCreateKeyResponse.md
+docs/ApiEmbeddingObj.md
+docs/ApiEmbeddingsResponse.md
 docs/ApiError.md
 docs/ApiErrorResponse.md
 docs/ApiKeyView.md
@@ -59,6 +61,8 @@ src/models/api_chat_message.rs
 src/models/api_choice.rs
 src/models/api_create_key_request.rs
 src/models/api_create_key_response.rs
+src/models/api_embedding_obj.rs
+src/models/api_embeddings_response.rs
 src/models/api_error.rs
 src/models/api_error_response.rs
 src/models/api_key_view.rs
