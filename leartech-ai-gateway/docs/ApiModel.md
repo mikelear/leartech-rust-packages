@@ -12,6 +12,7 @@ Name | Type | Description | Notes
 **owned_by** | Option<**String**> |  | [optional]
 **provider** | Option<**String**> | Provider is WHOSE model it is; Hosting is where the weights run.  Empty when the row is unseeded, so a client can tell \"unknown\" from \"leartech\" rather than defaulting a third party to us. proven-by: TestProvenance_TheLiteLLMModelsAreNotOneSupplier | [optional]
 **provider_model** | Option<**String**> |  | [optional]
+**surfaces** | Option<**Vec<String>**> | Surfaces is what the model is served AS. Per-MODEL, not per-interface: qwen-embedding is embeddings-only behind the same fireworks interface that serves chat models, and a caller choosing a CHAT model needs to filter it out — which is what 00029 exists for.  omitempty: an older gateway sends nothing and a client reads that as \"unreported\", not \"serves nothing\" — same rule as provider/hosting.  proven-by: TestModels_PublishesTheSurfacesEachModelServes | [optional]
 **vision** | Option<**bool**> |  | [optional]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

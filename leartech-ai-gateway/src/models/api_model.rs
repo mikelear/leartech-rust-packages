@@ -32,6 +32,9 @@ pub struct ApiModel {
     pub provider: Option<String>,
     #[serde(rename = "provider_model", skip_serializing_if = "Option::is_none")]
     pub provider_model: Option<String>,
+    /// Surfaces is what the model is served AS. Per-MODEL, not per-interface: qwen-embedding is embeddings-only behind the same fireworks interface that serves chat models, and a caller choosing a CHAT model needs to filter it out — which is what 00029 exists for.  omitempty: an older gateway sends nothing and a client reads that as \"unreported\", not \"serves nothing\" — same rule as provider/hosting.  proven-by: TestModels_PublishesTheSurfacesEachModelServes
+    #[serde(rename = "surfaces", skip_serializing_if = "Option::is_none")]
+    pub surfaces: Option<Vec<String>>,
     #[serde(rename = "vision", skip_serializing_if = "Option::is_none")]
     pub vision: Option<bool>,
 }
@@ -47,6 +50,7 @@ impl ApiModel {
             owned_by: None,
             provider: None,
             provider_model: None,
+            surfaces: None,
             vision: None,
         }
     }
