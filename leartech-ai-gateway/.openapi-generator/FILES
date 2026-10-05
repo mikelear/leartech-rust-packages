@@ -33,6 +33,8 @@ docs/ApiToolsResponse.md
 docs/ApiUsage.md
 docs/ApiUsageResponse.md
 docs/ApiVersionResponse.md
+docs/ApiWebSearchProvider.md
+docs/ApiWebSearchResponse.md
 docs/ChatApi.md
 docs/EmbeddingsApi.md
 docs/MetaApi.md
@@ -83,6 +85,8 @@ src/models/api_tools_response.rs
 src/models/api_usage.rs
 src/models/api_usage_response.rs
 src/models/api_version_response.rs
+src/models/api_web_search_provider.rs
+src/models/api_web_search_response.rs
 src/models/mod.rs
 src/models/store_usage_row.rs
 src/models/webfetch_result.rs
