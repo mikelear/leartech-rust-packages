@@ -1,3 +1,5 @@
+pub mod handlers_ba_pass;
+pub use self::handlers_ba_pass::HandlersBaPass;
 pub mod handlers_client_binary;
 pub use self::handlers_client_binary::HandlersClientBinary;
 pub mod handlers_clients_response;
