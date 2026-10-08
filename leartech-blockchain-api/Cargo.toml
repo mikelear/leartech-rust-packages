@@ -1,6 +1,6 @@
 [package]
 name = "leartech-blockchain-api"
-version = "0.0.1"
+version = "0.0.3"
 authors = ["OpenAPI Generator team and contributors"]
 description = "Blockchain API service."
 license = "Apache 2.0"
