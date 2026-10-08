@@ -120,6 +120,7 @@ impl From<&str> for ContentType {
     }
 }
 
+pub mod blockchain_api;
 pub mod example_api;
 pub mod fleet_test_api;
 pub mod health_api;
@@ -129,12 +130,14 @@ pub mod configuration;
 use std::sync::Arc;
 
 pub trait Api {
+    fn blockchain_api(&self) -> &dyn blockchain_api::BlockchainApi;
     fn example_api(&self) -> &dyn example_api::ExampleApi;
     fn fleet_test_api(&self) -> &dyn fleet_test_api::FleetTestApi;
     fn health_api(&self) -> &dyn health_api::HealthApi;
 }
 
 pub struct ApiClient {
+    blockchain_api: Box<dyn blockchain_api::BlockchainApi>,
     example_api: Box<dyn example_api::ExampleApi>,
     fleet_test_api: Box<dyn fleet_test_api::FleetTestApi>,
     health_api: Box<dyn health_api::HealthApi>,
@@ -143,6 +146,7 @@ pub struct ApiClient {
 impl ApiClient {
     pub fn new(configuration: Arc<configuration::Configuration>) -> Self {
         Self {
+            blockchain_api: Box::new(blockchain_api::BlockchainApiClient::new(configuration.clone())),
             example_api: Box::new(example_api::ExampleApiClient::new(configuration.clone())),
             fleet_test_api: Box::new(fleet_test_api::FleetTestApiClient::new(configuration.clone())),
             health_api: Box::new(health_api::HealthApiClient::new(configuration.clone())),
@@ -151,6 +155,9 @@ impl ApiClient {
 }
 
 impl Api for ApiClient {
+    fn blockchain_api(&self) -> &dyn blockchain_api::BlockchainApi {
+        self.blockchain_api.as_ref()
+    }
     fn example_api(&self) -> &dyn example_api::ExampleApi {
         self.example_api.as_ref()
     }
@@ -164,6 +171,7 @@ impl Api for ApiClient {
 
 #[cfg(feature = "mockall")]
 pub struct MockApiClient {
+    pub blockchain_api_mock: blockchain_api::MockBlockchainApi,
     pub example_api_mock: example_api::MockExampleApi,
     pub fleet_test_api_mock: fleet_test_api::MockFleetTestApi,
     pub health_api_mock: health_api::MockHealthApi,
@@ -173,6 +181,7 @@ pub struct MockApiClient {
 impl MockApiClient {
     pub fn new() -> Self {
         Self {
+            blockchain_api_mock: blockchain_api::MockBlockchainApi::new(),
             example_api_mock: example_api::MockExampleApi::new(),
             fleet_test_api_mock: fleet_test_api::MockFleetTestApi::new(),
             health_api_mock: health_api::MockHealthApi::new(),
@@ -182,6 +191,9 @@ impl MockApiClient {
 
 #[cfg(feature = "mockall")]
 impl Api for MockApiClient {
+    fn blockchain_api(&self) -> &dyn blockchain_api::BlockchainApi {
+        &self.blockchain_api_mock
+    }
     fn example_api(&self) -> &dyn example_api::ExampleApi {
         &self.example_api_mock
     }
