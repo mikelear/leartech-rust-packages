@@ -43,6 +43,16 @@ pub trait BlockchainApi: Send + Sync {
     /// 
     async fn api_v1_deployments_get<'contract, 'chain, 'address>(&self, contract: Option<&'contract str>, chain: Option<&'chain str>, address: Option<&'address str>) -> Result<models::HandlersListResponse, Error<ApiV1DeploymentsGetError>>;
 
+    /// POST /api/v1/deployments/plan
+    ///
+    /// Everything a review needs about a proposed deployment: the constructor signature, the ABI-encoded args, the exact calldata, a gas estimate and validation findings. Touches the chain only for an eth_estimateGas. No signer required, nothing broadcast.
+    async fn api_v1_deployments_plan_post<'body>(&self, body: models::BlockchainPlanRequest) -> Result<models::BlockchainPlanResult, Error<ApiV1DeploymentsPlanPostError>>;
+
+    /// POST /api/v1/deployments
+    ///
+    /// Runs the plan, refuses on error-level findings, then signs and broadcasts the creation transaction and records a pending deployment row for the caller's tenant. Returns immediately with the transaction hash and status pending — get_transaction is how a caller follows up. Requires leartechapi:mcp:write and a funded signer.
+    async fn api_v1_deployments_post<'body>(&self, body: models::BlockchainPlanRequest) -> Result<models::BlockchainDeployResult, Error<ApiV1DeploymentsPostError>>;
+
     /// GET /api/v1/events
     ///
     /// 
@@ -52,6 +62,16 @@ pub trait BlockchainApi: Send + Sync {
     ///
     /// 
     async fn api_v1_transactions_hash_get<'hash>(&self, hash: &'hash str) -> Result<models::BlockchainTransaction, Error<ApiV1TransactionsHashGetError>>;
+
+    /// POST /api/v1/transactions
+    ///
+    /// Signs one transaction with the service key and broadcasts it, returning immediately with the hash and status pending. get_transaction is how a caller follows up. Requires leartechapi:mcp:write and a funded signer.
+    async fn api_v1_transactions_post<'body>(&self, body: models::BlockchainSubmitRequest) -> Result<models::BlockchainSubmitResult, Error<ApiV1TransactionsPostError>>;
+
+    /// POST /api/v1/transactions/simulate
+    ///
+    /// Runs an eth_call (with state override where the node accepts one) plus an eth_estimateGas against the latest state and returns the decoded result, the gas estimate and the revert reason if the call would revert. A revert is a RESULT here, not an error. Nothing is broadcast and no signer is required.
+    async fn api_v1_transactions_simulate_post<'body>(&self, body: serde_json::Value) -> Result<models::BlockchainSimulateResult, Error<ApiV1TransactionsSimulatePostError>>;
 }
 
 pub struct BlockchainApiClient {
@@ -264,6 +284,100 @@ impl BlockchainApi for BlockchainApiClient {
         }
     }
 
+    /// Everything a review needs about a proposed deployment: the constructor signature, the ABI-encoded args, the exact calldata, a gas estimate and validation findings. Touches the chain only for an eth_estimateGas. No signer required, nothing broadcast.
+    async fn api_v1_deployments_plan_post<'body>(&self, body: models::BlockchainPlanRequest) -> Result<models::BlockchainPlanResult, Error<ApiV1DeploymentsPlanPostError>> {
+        let local_var_configuration = &self.configuration;
+
+        let local_var_client = &local_var_configuration.client;
+
+        let local_var_uri_str = format!("{}/api/v1/deployments/plan", local_var_configuration.base_path);
+        let mut local_var_req_builder = local_var_client.request(reqwest::Method::POST, local_var_uri_str.as_str());
+
+        if let Some(ref local_var_user_agent) = local_var_configuration.user_agent {
+            local_var_req_builder = local_var_req_builder.header(reqwest::header::USER_AGENT, local_var_user_agent.clone());
+        }
+        if let Some(ref local_var_apikey) = local_var_configuration.api_key {
+            let local_var_key = local_var_apikey.key.clone();
+            let local_var_value = match local_var_apikey.prefix {
+                Some(ref local_var_prefix) => format!("{} {}", local_var_prefix, local_var_key),
+                None => local_var_key,
+            };
+            local_var_req_builder = local_var_req_builder.header("Authorization", local_var_value);
+        };
+        local_var_req_builder = local_var_req_builder.json(&body);
+
+        let local_var_req = local_var_req_builder.build()?;
+        let local_var_resp = local_var_client.execute(local_var_req).await?;
+
+        let local_var_status = local_var_resp.status();
+        let local_var_content_type = local_var_resp
+            .headers()
+            .get("content-type")
+            .and_then(|v| v.to_str().ok())
+            .unwrap_or("application/octet-stream");
+        let local_var_content_type = super::ContentType::from(local_var_content_type);
+        let local_var_content = local_var_resp.text().await?;
+
+        if !local_var_status.is_client_error() && !local_var_status.is_server_error() {
+            match local_var_content_type {
+                ContentType::Json => serde_json::from_str(&local_var_content).map_err(Error::from),
+                ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::BlockchainPlanResult`"))),
+                ContentType::Unsupported(local_var_unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{local_var_unknown_type}` content type response that cannot be converted to `models::BlockchainPlanResult`")))),
+            }
+        } else {
+            let local_var_entity: Option<ApiV1DeploymentsPlanPostError> = serde_json::from_str(&local_var_content).ok();
+            let local_var_error = ResponseContent { status: local_var_status, content: local_var_content, entity: local_var_entity };
+            Err(Error::ResponseError(local_var_error))
+        }
+    }
+
+    /// Runs the plan, refuses on error-level findings, then signs and broadcasts the creation transaction and records a pending deployment row for the caller's tenant. Returns immediately with the transaction hash and status pending — get_transaction is how a caller follows up. Requires leartechapi:mcp:write and a funded signer.
+    async fn api_v1_deployments_post<'body>(&self, body: models::BlockchainPlanRequest) -> Result<models::BlockchainDeployResult, Error<ApiV1DeploymentsPostError>> {
+        let local_var_configuration = &self.configuration;
+
+        let local_var_client = &local_var_configuration.client;
+
+        let local_var_uri_str = format!("{}/api/v1/deployments", local_var_configuration.base_path);
+        let mut local_var_req_builder = local_var_client.request(reqwest::Method::POST, local_var_uri_str.as_str());
+
+        if let Some(ref local_var_user_agent) = local_var_configuration.user_agent {
+            local_var_req_builder = local_var_req_builder.header(reqwest::header::USER_AGENT, local_var_user_agent.clone());
+        }
+        if let Some(ref local_var_apikey) = local_var_configuration.api_key {
+            let local_var_key = local_var_apikey.key.clone();
+            let local_var_value = match local_var_apikey.prefix {
+                Some(ref local_var_prefix) => format!("{} {}", local_var_prefix, local_var_key),
+                None => local_var_key,
+            };
+            local_var_req_builder = local_var_req_builder.header("Authorization", local_var_value);
+        };
+        local_var_req_builder = local_var_req_builder.json(&body);
+
+        let local_var_req = local_var_req_builder.build()?;
+        let local_var_resp = local_var_client.execute(local_var_req).await?;
+
+        let local_var_status = local_var_resp.status();
+        let local_var_content_type = local_var_resp
+            .headers()
+            .get("content-type")
+            .and_then(|v| v.to_str().ok())
+            .unwrap_or("application/octet-stream");
+        let local_var_content_type = super::ContentType::from(local_var_content_type);
+        let local_var_content = local_var_resp.text().await?;
+
+        if !local_var_status.is_client_error() && !local_var_status.is_server_error() {
+            match local_var_content_type {
+                ContentType::Json => serde_json::from_str(&local_var_content).map_err(Error::from),
+                ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::BlockchainDeployResult`"))),
+                ContentType::Unsupported(local_var_unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{local_var_unknown_type}` content type response that cannot be converted to `models::BlockchainDeployResult`")))),
+            }
+        } else {
+            let local_var_entity: Option<ApiV1DeploymentsPostError> = serde_json::from_str(&local_var_content).ok();
+            let local_var_error = ResponseContent { status: local_var_status, content: local_var_content, entity: local_var_entity };
+            Err(Error::ResponseError(local_var_error))
+        }
+    }
+
     async fn api_v1_events_get<'address, 'event, 'from_block, 'to_block, 'tx_hash>(&self, address: Option<&'address str>, event: Option<&'event str>, from_block: Option<i32>, to_block: Option<i32>, tx_hash: Option<&'tx_hash str>) -> Result<models::HandlersListResponse, Error<ApiV1EventsGetError>> {
         let local_var_configuration = &self.configuration;
 
@@ -369,6 +483,100 @@ impl BlockchainApi for BlockchainApiClient {
         }
     }
 
+    /// Signs one transaction with the service key and broadcasts it, returning immediately with the hash and status pending. get_transaction is how a caller follows up. Requires leartechapi:mcp:write and a funded signer.
+    async fn api_v1_transactions_post<'body>(&self, body: models::BlockchainSubmitRequest) -> Result<models::BlockchainSubmitResult, Error<ApiV1TransactionsPostError>> {
+        let local_var_configuration = &self.configuration;
+
+        let local_var_client = &local_var_configuration.client;
+
+        let local_var_uri_str = format!("{}/api/v1/transactions", local_var_configuration.base_path);
+        let mut local_var_req_builder = local_var_client.request(reqwest::Method::POST, local_var_uri_str.as_str());
+
+        if let Some(ref local_var_user_agent) = local_var_configuration.user_agent {
+            local_var_req_builder = local_var_req_builder.header(reqwest::header::USER_AGENT, local_var_user_agent.clone());
+        }
+        if let Some(ref local_var_apikey) = local_var_configuration.api_key {
+            let local_var_key = local_var_apikey.key.clone();
+            let local_var_value = match local_var_apikey.prefix {
+                Some(ref local_var_prefix) => format!("{} {}", local_var_prefix, local_var_key),
+                None => local_var_key,
+            };
+            local_var_req_builder = local_var_req_builder.header("Authorization", local_var_value);
+        };
+        local_var_req_builder = local_var_req_builder.json(&body);
+
+        let local_var_req = local_var_req_builder.build()?;
+        let local_var_resp = local_var_client.execute(local_var_req).await?;
+
+        let local_var_status = local_var_resp.status();
+        let local_var_content_type = local_var_resp
+            .headers()
+            .get("content-type")
+            .and_then(|v| v.to_str().ok())
+            .unwrap_or("application/octet-stream");
+        let local_var_content_type = super::ContentType::from(local_var_content_type);
+        let local_var_content = local_var_resp.text().await?;
+
+        if !local_var_status.is_client_error() && !local_var_status.is_server_error() {
+            match local_var_content_type {
+                ContentType::Json => serde_json::from_str(&local_var_content).map_err(Error::from),
+                ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::BlockchainSubmitResult`"))),
+                ContentType::Unsupported(local_var_unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{local_var_unknown_type}` content type response that cannot be converted to `models::BlockchainSubmitResult`")))),
+            }
+        } else {
+            let local_var_entity: Option<ApiV1TransactionsPostError> = serde_json::from_str(&local_var_content).ok();
+            let local_var_error = ResponseContent { status: local_var_status, content: local_var_content, entity: local_var_entity };
+            Err(Error::ResponseError(local_var_error))
+        }
+    }
+
+    /// Runs an eth_call (with state override where the node accepts one) plus an eth_estimateGas against the latest state and returns the decoded result, the gas estimate and the revert reason if the call would revert. A revert is a RESULT here, not an error. Nothing is broadcast and no signer is required.
+    async fn api_v1_transactions_simulate_post<'body>(&self, body: serde_json::Value) -> Result<models::BlockchainSimulateResult, Error<ApiV1TransactionsSimulatePostError>> {
+        let local_var_configuration = &self.configuration;
+
+        let local_var_client = &local_var_configuration.client;
+
+        let local_var_uri_str = format!("{}/api/v1/transactions/simulate", local_var_configuration.base_path);
+        let mut local_var_req_builder = local_var_client.request(reqwest::Method::POST, local_var_uri_str.as_str());
+
+        if let Some(ref local_var_user_agent) = local_var_configuration.user_agent {
+            local_var_req_builder = local_var_req_builder.header(reqwest::header::USER_AGENT, local_var_user_agent.clone());
+        }
+        if let Some(ref local_var_apikey) = local_var_configuration.api_key {
+            let local_var_key = local_var_apikey.key.clone();
+            let local_var_value = match local_var_apikey.prefix {
+                Some(ref local_var_prefix) => format!("{} {}", local_var_prefix, local_var_key),
+                None => local_var_key,
+            };
+            local_var_req_builder = local_var_req_builder.header("Authorization", local_var_value);
+        };
+        local_var_req_builder = local_var_req_builder.json(&body);
+
+        let local_var_req = local_var_req_builder.build()?;
+        let local_var_resp = local_var_client.execute(local_var_req).await?;
+
+        let local_var_status = local_var_resp.status();
+        let local_var_content_type = local_var_resp
+            .headers()
+            .get("content-type")
+            .and_then(|v| v.to_str().ok())
+            .unwrap_or("application/octet-stream");
+        let local_var_content_type = super::ContentType::from(local_var_content_type);
+        let local_var_content = local_var_resp.text().await?;
+
+        if !local_var_status.is_client_error() && !local_var_status.is_server_error() {
+            match local_var_content_type {
+                ContentType::Json => serde_json::from_str(&local_var_content).map_err(Error::from),
+                ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::BlockchainSimulateResult`"))),
+                ContentType::Unsupported(local_var_unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{local_var_unknown_type}` content type response that cannot be converted to `models::BlockchainSimulateResult`")))),
+            }
+        } else {
+            let local_var_entity: Option<ApiV1TransactionsSimulatePostError> = serde_json::from_str(&local_var_content).ok();
+            let local_var_error = ResponseContent { status: local_var_status, content: local_var_content, entity: local_var_entity };
+            Err(Error::ResponseError(local_var_error))
+        }
+    }
+
 }
 
 /// struct for typed errors of method [`BlockchainApi::api_v1_chain_status_get`]
@@ -401,6 +609,28 @@ pub enum ApiV1DeploymentsGetError {
     UnknownValue(serde_json::Value),
 }
 
+/// struct for typed errors of method [`BlockchainApi::api_v1_deployments_plan_post`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ApiV1DeploymentsPlanPostError {
+    Status400(std::collections::HashMap<String, String>),
+    Status404(std::collections::HashMap<String, String>),
+    Status503(std::collections::HashMap<String, String>),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`BlockchainApi::api_v1_deployments_post`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ApiV1DeploymentsPostError {
+    Status400(std::collections::HashMap<String, String>),
+    Status404(std::collections::HashMap<String, String>),
+    Status422(models::BlockchainPlanResult),
+    Status502(std::collections::HashMap<String, String>),
+    Status503(std::collections::HashMap<String, String>),
+    UnknownValue(serde_json::Value),
+}
+
 /// struct for typed errors of method [`BlockchainApi::api_v1_events_get`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -413,6 +643,27 @@ pub enum ApiV1EventsGetError {
 #[serde(untagged)]
 pub enum ApiV1TransactionsHashGetError {
     Status404(std::collections::HashMap<String, String>),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`BlockchainApi::api_v1_transactions_post`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ApiV1TransactionsPostError {
+    Status400(std::collections::HashMap<String, String>),
+    Status404(std::collections::HashMap<String, String>),
+    Status502(std::collections::HashMap<String, String>),
+    Status503(std::collections::HashMap<String, String>),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`BlockchainApi::api_v1_transactions_simulate_post`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ApiV1TransactionsSimulatePostError {
+    Status400(std::collections::HashMap<String, String>),
+    Status404(std::collections::HashMap<String, String>),
+    Status503(std::collections::HashMap<String, String>),
     UnknownValue(serde_json::Value),
 }
 
