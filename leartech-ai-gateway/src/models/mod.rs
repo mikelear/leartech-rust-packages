@@ -42,6 +42,8 @@ pub mod api_protected_resource_metadata;
 pub use self::api_protected_resource_metadata::ApiProtectedResourceMetadata;
 pub mod api_request_message;
 pub use self::api_request_message::ApiRequestMessage;
+pub mod api_set_budget_request;
+pub use self::api_set_budget_request::ApiSetBudgetRequest;
 pub mod api_stream_options;
 pub use self::api_stream_options::ApiStreamOptions;
 pub mod api_tool;

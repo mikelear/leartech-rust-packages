@@ -26,6 +26,7 @@ docs/ApiPricingResponse.md
 docs/ApiPromptTokensDetails.md
 docs/ApiProtectedResourceMetadata.md
 docs/ApiRequestMessage.md
+docs/ApiSetBudgetRequest.md
 docs/ApiStreamOptions.md
 docs/ApiTool.md
 docs/ApiToolFunction.md
@@ -78,6 +79,7 @@ src/models/api_pricing_response.rs
 src/models/api_prompt_tokens_details.rs
 src/models/api_protected_resource_metadata.rs
 src/models/api_request_message.rs
+src/models/api_set_budget_request.rs
 src/models/api_stream_options.rs
 src/models/api_tool.rs
 src/models/api_tool_function.rs

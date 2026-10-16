@@ -5,6 +5,7 @@ All URIs are relative to *http://localhost*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**admin_v1_keys_get**](AdminApi.md#admin_v1_keys_get) | **GET** /admin/v1/keys | List virtual keys for the caller's tenant
+[**admin_v1_keys_keyid_budget_put**](AdminApi.md#admin_v1_keys_keyid_budget_put) | **PUT** /admin/v1/keys/{keyid}/budget | Set an absolute budget on a key (platform; may raise above the caller's ceiling)
 [**admin_v1_keys_keyid_delete**](AdminApi.md#admin_v1_keys_keyid_delete) | **DELETE** /admin/v1/keys/{keyid} | Revoke a virtual key (soft; never deleted)
 [**admin_v1_keys_keyid_patch**](AdminApi.md#admin_v1_keys_keyid_patch) | **PATCH** /admin/v1/keys/{keyid} | Amend a key's policy (narrowing only)
 [**admin_v1_keys_keyid_rotate_post**](AdminApi.md#admin_v1_keys_keyid_rotate_post) | **POST** /admin/v1/keys/{keyid}/rotate | Rotate a key's secret (returned once)
@@ -34,6 +35,35 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+
+## admin_v1_keys_keyid_budget_put
+
+> std::collections::HashMap<String, serde_json::Value> admin_v1_keys_keyid_budget_put(keyid, request)
+Set an absolute budget on a key (platform; may raise above the caller's ceiling)
+
+### Parameters
+
+
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**keyid** | **String** | key id | [required] |
+**request** | [**ApiSetBudgetRequest**](ApiSetBudgetRequest.md) | new absolute budget | [required] |
+
+### Return type
+
+[**std::collections::HashMap<String, serde_json::Value>**](serde_json::Value.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: application/json
 - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

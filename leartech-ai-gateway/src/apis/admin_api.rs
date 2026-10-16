@@ -28,6 +28,11 @@ pub trait AdminApi: Send + Sync {
     /// 
     async fn admin_v1_keys_get<>(&self, ) -> Result<models::ApiListKeysResponse, Error<AdminV1KeysGetError>>;
 
+    /// PUT /admin/v1/keys/{keyid}/budget
+    ///
+    /// 
+    async fn admin_v1_keys_keyid_budget_put<'keyid, 'request>(&self, keyid: &'keyid str, request: models::ApiSetBudgetRequest) -> Result<std::collections::HashMap<String, serde_json::Value>, Error<AdminV1KeysKeyidBudgetPutError>>;
+
     /// DELETE /admin/v1/keys/{keyid}
     ///
     /// 
@@ -105,6 +110,44 @@ impl AdminApi for AdminApiClient {
             }
         } else {
             let local_var_entity: Option<AdminV1KeysGetError> = serde_json::from_str(&local_var_content).ok();
+            let local_var_error = ResponseContent { status: local_var_status, content: local_var_content, entity: local_var_entity };
+            Err(Error::ResponseError(local_var_error))
+        }
+    }
+
+    async fn admin_v1_keys_keyid_budget_put<'keyid, 'request>(&self, keyid: &'keyid str, request: models::ApiSetBudgetRequest) -> Result<std::collections::HashMap<String, serde_json::Value>, Error<AdminV1KeysKeyidBudgetPutError>> {
+        let local_var_configuration = &self.configuration;
+
+        let local_var_client = &local_var_configuration.client;
+
+        let local_var_uri_str = format!("{}/admin/v1/keys/{keyid}/budget", local_var_configuration.base_path, keyid=crate::apis::urlencode(keyid));
+        let mut local_var_req_builder = local_var_client.request(reqwest::Method::PUT, local_var_uri_str.as_str());
+
+        if let Some(ref local_var_user_agent) = local_var_configuration.user_agent {
+            local_var_req_builder = local_var_req_builder.header(reqwest::header::USER_AGENT, local_var_user_agent.clone());
+        }
+        local_var_req_builder = local_var_req_builder.json(&request);
+
+        let local_var_req = local_var_req_builder.build()?;
+        let local_var_resp = local_var_client.execute(local_var_req).await?;
+
+        let local_var_status = local_var_resp.status();
+        let local_var_content_type = local_var_resp
+            .headers()
+            .get("content-type")
+            .and_then(|v| v.to_str().ok())
+            .unwrap_or("application/octet-stream");
+        let local_var_content_type = super::ContentType::from(local_var_content_type);
+        let local_var_content = local_var_resp.text().await?;
+
+        if !local_var_status.is_client_error() && !local_var_status.is_server_error() {
+            match local_var_content_type {
+                ContentType::Json => serde_json::from_str(&local_var_content).map_err(Error::from),
+                ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `std::collections::HashMap&lt;String, serde_json::Value&gt;`"))),
+                ContentType::Unsupported(local_var_unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{local_var_unknown_type}` content type response that cannot be converted to `std::collections::HashMap&lt;String, serde_json::Value&gt;`")))),
+            }
+        } else {
+            let local_var_entity: Option<AdminV1KeysKeyidBudgetPutError> = serde_json::from_str(&local_var_content).ok();
             let local_var_error = ResponseContent { status: local_var_status, content: local_var_content, entity: local_var_entity };
             Err(Error::ResponseError(local_var_error))
         }
@@ -331,6 +374,16 @@ impl AdminApi for AdminApiClient {
 #[serde(untagged)]
 pub enum AdminV1KeysGetError {
     Status403(models::ApiErrorResponse),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`AdminApi::admin_v1_keys_keyid_budget_put`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum AdminV1KeysKeyidBudgetPutError {
+    Status400(models::ApiErrorResponse),
+    Status403(models::ApiErrorResponse),
+    Status404(models::ApiErrorResponse),
     UnknownValue(serde_json::Value),
 }
 
