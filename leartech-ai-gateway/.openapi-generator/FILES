@@ -31,6 +31,9 @@ docs/ApiStreamOptions.md
 docs/ApiTool.md
 docs/ApiToolFunction.md
 docs/ApiToolsResponse.md
+docs/ApiTransformReport.md
+docs/ApiTransformSessionRequest.md
+docs/ApiTransformSessionResponse.md
 docs/ApiUsage.md
 docs/ApiUsageResponse.md
 docs/ApiVersionResponse.md
@@ -40,6 +43,7 @@ docs/ChatApi.md
 docs/EmbeddingsApi.md
 docs/MetaApi.md
 docs/ModelsApi.md
+docs/SessionsApi.md
 docs/StoreUsageRow.md
 docs/ToolsApi.md
 docs/WebApi.md
@@ -54,6 +58,7 @@ src/apis/embeddings_api.rs
 src/apis/meta_api.rs
 src/apis/mod.rs
 src/apis/models_api.rs
+src/apis/sessions_api.rs
 src/apis/tools_api.rs
 src/apis/web_api.rs
 src/lib.rs
@@ -84,6 +89,9 @@ src/models/api_stream_options.rs
 src/models/api_tool.rs
 src/models/api_tool_function.rs
 src/models/api_tools_response.rs
+src/models/api_transform_report.rs
+src/models/api_transform_session_request.rs
+src/models/api_transform_session_response.rs
 src/models/api_usage.rs
 src/models/api_usage_response.rs
 src/models/api_version_response.rs

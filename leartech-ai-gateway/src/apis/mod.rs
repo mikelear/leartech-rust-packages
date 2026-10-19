@@ -125,6 +125,7 @@ pub mod chat_api;
 pub mod embeddings_api;
 pub mod meta_api;
 pub mod models_api;
+pub mod sessions_api;
 pub mod tools_api;
 pub mod web_api;
 
@@ -138,6 +139,7 @@ pub trait Api {
     fn embeddings_api(&self) -> &dyn embeddings_api::EmbeddingsApi;
     fn meta_api(&self) -> &dyn meta_api::MetaApi;
     fn models_api(&self) -> &dyn models_api::ModelsApi;
+    fn sessions_api(&self) -> &dyn sessions_api::SessionsApi;
     fn tools_api(&self) -> &dyn tools_api::ToolsApi;
     fn web_api(&self) -> &dyn web_api::WebApi;
 }
@@ -148,6 +150,7 @@ pub struct ApiClient {
     embeddings_api: Box<dyn embeddings_api::EmbeddingsApi>,
     meta_api: Box<dyn meta_api::MetaApi>,
     models_api: Box<dyn models_api::ModelsApi>,
+    sessions_api: Box<dyn sessions_api::SessionsApi>,
     tools_api: Box<dyn tools_api::ToolsApi>,
     web_api: Box<dyn web_api::WebApi>,
 }
@@ -160,6 +163,7 @@ impl ApiClient {
             embeddings_api: Box::new(embeddings_api::EmbeddingsApiClient::new(configuration.clone())),
             meta_api: Box::new(meta_api::MetaApiClient::new(configuration.clone())),
             models_api: Box::new(models_api::ModelsApiClient::new(configuration.clone())),
+            sessions_api: Box::new(sessions_api::SessionsApiClient::new(configuration.clone())),
             tools_api: Box::new(tools_api::ToolsApiClient::new(configuration.clone())),
             web_api: Box::new(web_api::WebApiClient::new(configuration.clone())),
         }
@@ -182,6 +186,9 @@ impl Api for ApiClient {
     fn models_api(&self) -> &dyn models_api::ModelsApi {
         self.models_api.as_ref()
     }
+    fn sessions_api(&self) -> &dyn sessions_api::SessionsApi {
+        self.sessions_api.as_ref()
+    }
     fn tools_api(&self) -> &dyn tools_api::ToolsApi {
         self.tools_api.as_ref()
     }
@@ -197,6 +204,7 @@ pub struct MockApiClient {
     pub embeddings_api_mock: embeddings_api::MockEmbeddingsApi,
     pub meta_api_mock: meta_api::MockMetaApi,
     pub models_api_mock: models_api::MockModelsApi,
+    pub sessions_api_mock: sessions_api::MockSessionsApi,
     pub tools_api_mock: tools_api::MockToolsApi,
     pub web_api_mock: web_api::MockWebApi,
 }
@@ -210,6 +218,7 @@ impl MockApiClient {
             embeddings_api_mock: embeddings_api::MockEmbeddingsApi::new(),
             meta_api_mock: meta_api::MockMetaApi::new(),
             models_api_mock: models_api::MockModelsApi::new(),
+            sessions_api_mock: sessions_api::MockSessionsApi::new(),
             tools_api_mock: tools_api::MockToolsApi::new(),
             web_api_mock: web_api::MockWebApi::new(),
         }
@@ -232,6 +241,9 @@ impl Api for MockApiClient {
     }
     fn models_api(&self) -> &dyn models_api::ModelsApi {
         &self.models_api_mock
+    }
+    fn sessions_api(&self) -> &dyn sessions_api::SessionsApi {
+        &self.sessions_api_mock
     }
     fn tools_api(&self) -> &dyn tools_api::ToolsApi {
         &self.tools_api_mock
