@@ -33,6 +33,9 @@ pub struct ApiTransformReport {
     /// TargetMaxCtx is the target model's advertised context window, the ceiling the transform fit the session under.
     #[serde(rename = "target_max_ctx", skip_serializing_if = "Option::is_none")]
     pub target_max_ctx: Option<i32>,
+    /// ToolIDsRekeyed is how many tool-call ids were rewritten to a neutral format so the call/result pairing survives a cross-provider switch.
+    #[serde(rename = "tool_ids_rekeyed", skip_serializing_if = "Option::is_none")]
+    pub tool_ids_rekeyed: Option<i32>,
 }
 
 impl ApiTransformReport {
@@ -45,6 +48,7 @@ impl ApiTransformReport {
             fit: None,
             notes: None,
             target_max_ctx: None,
+            tool_ids_rekeyed: None,
         }
     }
 }
