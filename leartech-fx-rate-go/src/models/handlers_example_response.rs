@@ -1,7 +1,7 @@
 /*
- * Leartech Go Service Template API
+ * Leartech FX Rate API
  *
- * Golden Go service template — replace this description after cloning.
+ * Foreign-exchange rate service.
  *
  * The version of the OpenAPI document: 0.0.1
  * 
