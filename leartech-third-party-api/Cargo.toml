@@ -1,6 +1,6 @@
 [package]
 name = "leartech-third-party-api"
-version = "0.1.15"
+version = "0.1.16"
 authors = ["OpenAPI Generator team and contributors"]
 description = "Golden Go service template — replace this description after cloning."
 license = "Apache 2.0"
