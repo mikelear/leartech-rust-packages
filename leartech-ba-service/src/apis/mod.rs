@@ -120,7 +120,6 @@ impl From<&str> for ContentType {
     }
 }
 
-pub mod ba_api;
 pub mod clients_api;
 pub mod example_api;
 pub mod health_api;
@@ -131,7 +130,6 @@ pub mod configuration;
 use std::sync::Arc;
 
 pub trait Api {
-    fn ba_api(&self) -> &dyn ba_api::BaApi;
     fn clients_api(&self) -> &dyn clients_api::ClientsApi;
     fn example_api(&self) -> &dyn example_api::ExampleApi;
     fn health_api(&self) -> &dyn health_api::HealthApi;
@@ -139,7 +137,6 @@ pub trait Api {
 }
 
 pub struct ApiClient {
-    ba_api: Box<dyn ba_api::BaApi>,
     clients_api: Box<dyn clients_api::ClientsApi>,
     example_api: Box<dyn example_api::ExampleApi>,
     health_api: Box<dyn health_api::HealthApi>,
@@ -149,7 +146,6 @@ pub struct ApiClient {
 impl ApiClient {
     pub fn new(configuration: Arc<configuration::Configuration>) -> Self {
         Self {
-            ba_api: Box::new(ba_api::BaApiClient::new(configuration.clone())),
             clients_api: Box::new(clients_api::ClientsApiClient::new(configuration.clone())),
             example_api: Box::new(example_api::ExampleApiClient::new(configuration.clone())),
             health_api: Box::new(health_api::HealthApiClient::new(configuration.clone())),
@@ -159,9 +155,6 @@ impl ApiClient {
 }
 
 impl Api for ApiClient {
-    fn ba_api(&self) -> &dyn ba_api::BaApi {
-        self.ba_api.as_ref()
-    }
     fn clients_api(&self) -> &dyn clients_api::ClientsApi {
         self.clients_api.as_ref()
     }
@@ -178,7 +171,6 @@ impl Api for ApiClient {
 
 #[cfg(feature = "mockall")]
 pub struct MockApiClient {
-    pub ba_api_mock: ba_api::MockBaApi,
     pub clients_api_mock: clients_api::MockClientsApi,
     pub example_api_mock: example_api::MockExampleApi,
     pub health_api_mock: health_api::MockHealthApi,
@@ -189,7 +181,6 @@ pub struct MockApiClient {
 impl MockApiClient {
     pub fn new() -> Self {
         Self {
-            ba_api_mock: ba_api::MockBaApi::new(),
             clients_api_mock: clients_api::MockClientsApi::new(),
             example_api_mock: example_api::MockExampleApi::new(),
             health_api_mock: health_api::MockHealthApi::new(),
@@ -200,9 +191,6 @@ impl MockApiClient {
 
 #[cfg(feature = "mockall")]
 impl Api for MockApiClient {
-    fn ba_api(&self) -> &dyn ba_api::BaApi {
-        &self.ba_api_mock
-    }
     fn clients_api(&self) -> &dyn clients_api::ClientsApi {
         &self.clients_api_mock
     }
